@@ -1,0 +1,24 @@
+<h4>Historial de Asistencia(Offline)</h4>
+	<ul data-role="listview"  data-theme="b"  data-filter="true" data-filter-placeholder="Buscar" data-inset="false" id="list_registros">	
+		<script>
+						var bar="";
+						if(ID_MARCA.length >0)
+						{
+						for (var i = 0; i < ID_MARCA.length; i++)
+						{
+							//alert(FECHA_MARCA[i]);
+							var nom_m=NOM_MARCA[i];
+							if(nom_m.length > 4)
+							{
+								nom_m=NOM_MARCA[i].substr(0,4)+"...";
+							}
+								bar +="<li ><span class=titulo2>"+nom_m+"</span><p class='ui-li-aside'><span class=txt_mini2>"+FECHA_MARCA[i]+"</span></p></li>";
+							
+						}
+						$("#list_registros").append(bar);
+						}else
+						{
+							$("#contenido_sesion").html("<h4>Historial de Asistencia</h4><span class=titulo2>No hay marcaciones.</span>");
+						}
+			</script>
+	</ul>

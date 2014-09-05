@@ -1,0 +1,224 @@
+#barra_sup
+{
+	font-size:90%;
+	font-weight:bold;
+	background-color:#D1CFD2 !important;
+	height:5%;
+	
+	color:#4E4E4E;
+}
+
+#form_login
+{
+	margin:20px;
+	margin-top:40px;
+	text-align:center;
+}
+
+.input_form
+{
+	height:60px;
+	color:#8E878F;
+	
+}
+#boton_back
+{
+	color:#ffffff;
+	font-size:13px;	
+}
+#close_boton
+{
+	text-indent: -999px;
+	box-shadow: none;
+	border: 0;
+	border-radius: 0;
+	top: 0;
+	right: 0;
+	width: 70px;
+
+	height: 69px;
+	cursor:pointer;
+}
+#back_boton
+{
+	text-indent: -999px;
+	box-shadow: none;
+	border: 0;
+	border-radius: 0;
+	top: 0;
+	left: 0;
+	width: 70px;
+	height: 69px;
+	cursor:pointer;
+}
+#nom_reg
+{
+	background:url(../images/field-user.png) no-repeat center right !important;
+}
+#mail_reg, #mail_ses,#mail_lug
+{
+	background:url(../images/field-mail.png) no-repeat center right !important;
+}
+#clave_reg, #clave_ses
+{
+	background:url(../images/field-pass.png) no-repeat center right !important;
+}
+
+#nom_lug
+{
+	background:url(../images/field-service.png) no-repeat center right !important;
+}
+#calle_lug, #num_lug, #com_lug
+{
+	background:url(../images/field-ubicacion.png) no-repeat center right !important;
+}
+
+#myPopup,#myPopup_ses
+{
+	font-size:12px;
+	color:#4E4E4E;
+	background-color:#ffffff;
+	font-weight:bold;	
+}
+#myPopup
+{
+	max-height:200px !important;
+	min-width:200px !important;
+	overflow-y: auto;	
+	overflow-x:hidden; 
+}
+.titulo
+{
+	font-size:14px;
+	color:#0091E4;	
+	font-weight:bold;
+	border-bottom:1px solid #0091E4;
+	margin:5px;
+}
+.titulo3
+{
+	font-size:13px;
+	color:#0091E4;	
+	font-weight:bold;
+	float:right;
+}
+.titulo2
+{
+	font-size:15px;
+	color:#4E4E4E;	
+	font-weight:bold;
+	
+	text-align:center !important;
+}
+
+#form_interior
+{
+	margin:20px;
+	
+	text-align:left;
+}
+.titulo4
+{
+	font-size:11px;
+		
+	font-weight:bold;
+	
+}
+
+.input_form2
+{
+	height:40px;
+	color:#8E878F;
+	
+}
+.titulo_interior
+{
+	font-size:14px;
+	color:#4E4E4E;
+	font-weight:bold;
+	
+}
+.texto_interior
+{
+	font-size:13px;
+	color:#909090;
+}
+#contenido_sesion
+{
+	margin:20px;
+}
+
+.input_coment
+{
+	height:60px;
+	width:100%;
+	border:1px solid #0091E4;
+	border-radius:5px;
+	color:#8E878F;
+	
+}
+.bottom_coment
+{
+	background-color: #0091E4;
+	color:white;
+	font-weight:bold;
+    border-radius: 6px;
+    height: 60px;
+    width: 100%;
+}
+#coment_form
+{
+	text-align:center;
+	
+
+}
+
+.txt_mini
+{
+	color:#0091E4 !important;
+	font-weight:bold;
+	font-size:80% !important;	 
+	
+}
+
+.txt_mini2
+{
+	color:#0091E4 !important;
+	font-weight:bold;
+	font-size:75% !important;	 
+	
+}
+.txt_mini3
+{
+	color:red !important;
+	font-weight:bold;
+	font-size:75% !important;	 
+	
+}
+
+.txt_mini4
+{
+	color:red !important;
+	font-weight:bold;
+	font-size:80% !important;	 
+	
+}
+.titulo_basico
+{
+	color:#737373 !important;
+	
+	font-size:95% !important;	 
+}
+.marca_esp
+{
+	background-color: #E6E6E6 !important;
+}
+.curretn
+{
+	
+}
+#info_pres
+{
+	color:#4E4E4E;
+	font-size:80% !important;	 
+}
