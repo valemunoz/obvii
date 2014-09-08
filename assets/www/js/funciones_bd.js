@@ -110,7 +110,7 @@ function loadMenuOff()
 	$(".ui-page-active .maintenance_tabs").empty();
 	var bar='<div data-role="navbar" id=list_nav class="maintenance_tabs">';
 	bar +='<ul id="myNavbar">';
-	bar +='<li ><a  href="javascript:loadFavOff();"><img src="images/fav2.png"></a></li>';
+	bar +='<li ><a  href="javascript:loadFavOff();" class="ui-btn-active"><img src="images/fav2.png"></a></li>';
 	bar +='<li ><a  href="javascript:loadHomeOff();"><img src="images/icon-servicios.png"></a></li>';							
 	bar +='<li><a href="javascript:loadHistorialOff();"><img src="images/historial.png"></a></li>';
 	bar +='<li><a href=javascript:checkInternet(1);><img src="images/icon-info.png"></a></li>';
