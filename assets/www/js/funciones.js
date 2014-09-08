@@ -13,8 +13,6 @@ var path_info="http://locate.chilemap.cl/obvii/app/info.php";
  				$("#output").load(path_query2, 
 				{tipo:2} 
 					,function(){
-						 
-						
 						
 					}
 				);
@@ -489,8 +487,10 @@ function marcarSalida(id_lugar)
 				theme: 'a',
 				html: ""
 			});
+		checkInternet(4);		
 		navigator.geolocation.getCurrentPosition (function (pos)
 		{
+			
 			var lat = pos.coords.latitude;
   		var lng = pos.coords.longitude;
   		var accu=pos.coords.accuracy.toFixed(2);
@@ -534,6 +534,7 @@ function marcarLugar(id_lugar,comenta)
 				theme: 'a',
 				html: ""
 			});
+		checkInternet(4);
 		navigator.geolocation.getCurrentPosition (function (pos)
 		{
 			var lat = pos.coords.latitude;
@@ -570,6 +571,7 @@ function marcarLugar(id_lugar,comenta)
   function noLocation(err)
 {
 	$.mobile.loading( 'hide');
+	
 	mensaje("Se produjo un error en la lectura de su posici&oacute;n.<br>Esto se puede suceder al no darle permisos al sistema para obtener su ubicacion actual.<br>Por favor revise su configuracion e intentelo nuevamente",'ERROR','myPopup');
 	
 }
@@ -583,6 +585,7 @@ function marcarLugarCom(id_lugar)
 				theme: 'a',
 				html: ""
 			});
+			checkInternet(4);
 		navigator.geolocation.getCurrentPosition (function (pos)
 		{
 			var lat = pos.coords.latitude;
@@ -592,6 +595,7 @@ function marcarLugarCom(id_lugar)
   		OBVII_LON=lng;
   		OBVII_LAT=lat;
   		OBVII_ACCU=accu;
+  		
   	
 			$.mobile.loading( 'hide');
 			$.mobile.loading( 'show', {
