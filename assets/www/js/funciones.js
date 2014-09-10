@@ -3,6 +3,7 @@ var OBVII_LAT=0;
 var OBVII_ACCU=0;
 var PAIS_LON=-70.656235;
 var PAIS_LAT=-33.458943;
+var PAIS_ZOOM=10;
 var OBVII_PAIS="chile";
 
 var path_query="http://locate.chilemap.cl/obvii/app/query.php";
@@ -10,6 +11,7 @@ var path_query2="http://locate.chilemap.cl/obvii/app/query_app.php";
 var path_info="http://locate.chilemap.cl/obvii/app/info.php";
  			function loadMenu()
  			{
+ 				
  				$("#output").load(path_query2, 
 				{tipo:2} 
 					,function(){
@@ -71,7 +73,16 @@ function inicioSesion()
 		msg +="Correo electronico no valido.";
 		valida=false;
 	}
-	if(valida)
+	if(navigator.connection.type == Connection.NONE)
+ 	{
+ 		onOffline();
+ 		
+ 	}else
+ 	{
+ 		onOnline();
+ 		
+	}
+	if(valida && DEVICE_ONLINE)
 	{
 		$.mobile.loading( 'show', {
 			text: 'Validando datos...',
@@ -87,7 +98,10 @@ function inicioSesion()
 		);
 	}else
 	{
-		
+		if(!DEVICE_ONLINE)
+		{
+			msg="No tiene conexion a internet.<br>Por favor conectese a una red para poder iniciar sesi&oacute;n";
+		}
 			mensaje(msg,'ERROR','myPopup_ses');
 	}
 }
@@ -207,12 +221,19 @@ function loadInfo()
 
 function cerrarSesion()
 {
-	$("#contenido_sesion").load(path_query, 
+	
+	if(DEVICE_ONLINE)
+	{
+		$("#contenido_sesion").load(path_query, 
 			{tipo:3} 
 				,function(){	
 					window.location.href="index.html";
 				}
 		);
+	}else
+		{
+			deleteUser();
+		}
 }
 function addUsuario()
 {
@@ -746,17 +767,18 @@ function verMapa()
 			$("#contenido_sesion").load(path_query, 
 			{tipo:18} 
 				,function(){	
+					
 					$.mobile.loading( 'hide');
-					init(PAIS_LON,PAIS_LAT,10);
+					init(PAIS_LON,PAIS_LAT,PAIS_ZOOM);
 					//loadCentroMapa();
 					$("#info_pres").html("Para Actualizar su ubicaci&oacute;n actual, haga click aqu&iacute; <img onclick='loadCentroMapa();' src='images/current.png' class=curretn>");
-					if(OBVII_LON!=0)
+					/*if(OBVII_LON!=0)
 					{
 						$("#info_pres").html("Ultima ubicaci&oacute;n registrada con una presici&oacute;n de : "+OBVII_ACCU+"  <img onclick='loadCentroMapa();' src='images/current.png' class=curretn>");
 						moverCentro(OBVII_LAT,OBVII_LON,15);
 						//point5
 						addMarcadores(OBVII_LON,OBVII_LAT,"Ultima ubicaci&oacute;n registrada","images/point.png",40,40);
-					}
+					}*/
 					
 				}
 			);
@@ -787,4 +809,35 @@ function loadCentroMapa()
 			addMarcadores(OBVII_LON,OBVII_LAT,"Ubicaci&oacute;n Actual","images/point.png",40,40);
 			$.mobile.loading( 'hide');
 			},noLocation,{timeout:6000});
+}
+
+function moveOn()
+{
+	var centro =map.getCenter().transform(
+        new OpenLayers.Projection("EPSG:900913"), // de WGS 1984
+        new OpenLayers.Projection("EPSG:4326") // a Proyección Esférica Mercator
+      );
+      PAIS_LON=centro.lon;
+      PAIS_LAT=centro.lat;
+      PAIS_ZOOM=map.getZoom();
+      //alert(centro.lon);
+}
+
+function inicio_ses()
+{
+	$.mobile.loading( 'show', {
+				text: '...',
+				textVisible: true,
+				theme: 'a',
+				html: ""
+			});
+			$("#contenido_sesion").load("sesion.html", 
+			{} 
+				,function(){	
+					
+					$.mobile.loading( 'hide');
+					$('#contenido_sesion').trigger('create');				
+					
+				}
+			);
 }

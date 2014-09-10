@@ -351,32 +351,7 @@ function getExtencion()
 
 function loadMovimiento()
 {
-			for(i=0;i<CM_servicios.length;i++)
-			{
-				
-		
-				if(CM_servicios_estado[i]==0)
-				{
-					if(CM_servicios[i]== CM_id_antena)
-					{
-						if(map.getZoom()  >= MIN_ZOOM_ANTENAS)
-						{
-							deleteServicioMapa(i);
-							loadServEsp(CM_servicios[i],CM_servicios_icono[i],i);
-						}else
-							{
-								deleteServicioMapa(i);
-								mensaje("<p>El servicio de antenas solo esta disponible desde un zoom "+MIN_ZOOM_ANTENAS+". Si desea acercarse a ese zoom haga click <a href=javascript:map.zoomTo("+MIN_ZOOM_ANTENAS+");>aqui</a></p>");
-							}
-					}else
-					{
-						
-						deleteServicioMapa(i);
-						loadServEsp(CM_servicios[i],CM_servicios_icono[i],i);
-					}
-				}
-			}
-			
+		moveOn();			
 }
 
 

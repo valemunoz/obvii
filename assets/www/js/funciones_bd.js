@@ -23,17 +23,23 @@ var ano=dat.getFullYear();
 var mes=dat.getMonth();
 mes=mes+1;
 
-
 var SELECT_USER=false;
 
 var db = openDatabase('MyDB', '1.0', 'My Sample DB', 10000 * 1024);
 var tx_db;
 var DEVICE_ONLINE=false;
-
 function onready()
 {
-	
-	if(navigator.network.connection.type == Connection.NONE)
+	$.mobile.loading( 'show', {
+			text: 'Cargando...',
+			textVisible: true,
+			theme: 'a',
+			html: ""
+		});
+	$("#ll_mapa").hide();
+	$("#ll_off").hide(); 
+	$("#ll_cerrar").hide(); 
+	if(navigator.connection.type == Connection.NONE)
  	{
  		onOffline();
  		onready2();
@@ -55,13 +61,11 @@ function onready2()
     setTimeout("loadInicioOff();",1000);
         			
   }else
-  {
-  	
+  {  	
   	$("#output").load(path_query2, 
 			{tipo:1} 
-			,function(){			
-				loadMenu();	
-				loadLugaresON();	
+			,function(){
+				$.mobile.loading( 'hide');
 			}
 		);
   }
@@ -74,7 +78,8 @@ function loadInicioOff()
 	{
 		
 		$("#ll_mapa").hide();
-		$("#ll_off").hide(); 		                      
+		$("#ll_off").hide(); 
+		$("#ll_cerrar").show(); 
 		                      
 		loadMenuOff();
 		selectLugarBDlocal();
@@ -95,7 +100,6 @@ function loadFavOff()
 			theme: 'a',
 			html: ""
 		});
-
 		$("#contenido_sesion").load("favoritos.html", 
 			{} 
 				,function(){	
@@ -224,7 +228,7 @@ function selectLugar(tx, rs)
     			b=i;
     			ID_LUGAR[b]=rs.rows.item(i).id;
 					NOM_LUGAR[b]=rs.rows.item(i).name;
-					//alert("id:"+ID_LUGAR[b]);
+					//alert("id:"+NOM_LUGAR[b]);
 					FECHA_LUGAR[b]=rs.rows.item(i).fecha;
 					FAV_LUGAR[b]=rs.rows.item(i).fav;
 					DIR_LUGAR[b]=rs.rows.item(i).direccion;
@@ -254,6 +258,7 @@ function cleanLugarBD()
 
 function loadLugaresON()
 {
+	
 	cleanLugarBD();
   $("#output").load(path_query2, 
 	{tipo:6} 
@@ -506,7 +511,7 @@ function loadEditarOff(id_edit)
 function checkInternet(tip)
 {
 	
-	if(navigator.network.connection.type == Connection.NONE)
+	if(navigator.connection.type == Connection.NONE)
  	{
  		
  		//onOffline();
@@ -759,10 +764,21 @@ function validaMarcacionOff()
 		
 		
 		
-		
 	}else
 		{
 			$.mobile.loading( 'hide');
 			mensaje(msg,'ERROR','myPopup');
 		}
+}
+
+function deleteUser()
+{
+	 db.transaction(function(tx) 
+ {
+ 	
+ 	  tx.executeSql('DROP TABLE IF EXISTS usuario');
+    tx.executeSql('create table if not exists usuario(id, name, mail, estado, id_obvii)');    
+    window.location.href="index.html";
+	}, errorCB, successCB);    
+	   
 }
