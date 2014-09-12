@@ -1,6 +1,6 @@
 #barra_sup
 {
-	font-size:90%;
+	font-size:110%;
 	font-weight:bold;
 	background-color:#D1CFD2 !important;
 	height:5%;
@@ -133,15 +133,15 @@
 }
 .titulo_interior
 {
-	font-size:14px;
+	font-size:100% !important;
 	color:#4E4E4E;
 	font-weight:bold;
 	
 }
 .texto_interior
 {
-	font-size:13px;
-	color:#909090;
+	font-size:90% !important;
+	color:#7F7F7F !important;
 }
 #contenido_sesion
 {
@@ -222,11 +222,19 @@
 	color:#4E4E4E;
 	font-size:80% !important;	 
 }
-.img_ctr
+#id_sync_wel
 {
-margin:0 auto !important;
-margin-left:auto !important;
-margin-right:auto !important;
-align:center !important;
-text-align:center !important;
+	color:#FF0000 !important;
+	
+}
+#id_sync_info
+{
+	margin:20px;
+	font-size:90% !important;
+	color:#909090;
+	text-align:left;
+}
+#bienvenido_div
+{
+	font-size:85% !important;
 }

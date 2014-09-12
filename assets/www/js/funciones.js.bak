@@ -11,7 +11,7 @@ var path_query2="http://locate.chilemap.cl/obvii/app/query_app.php";
 var path_info="http://locate.chilemap.cl/obvii/app/info.php";
  			function loadMenu()
  			{
- 				alert("paso");
+ 				
  				$("#output").load(path_query2, 
 				{tipo:2} 
 					,function(){
@@ -583,7 +583,7 @@ function marcarLugar(id_lugar,comenta)
 			);
 		
 			
-			},noLocation,{timeout:6000});
+			},noLocation,{timeout:60000});
 		
 	}
 	

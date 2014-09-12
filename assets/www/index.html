@@ -9,7 +9,8 @@
          <link rel="stylesheet" href="css/themes/themes.css" />
   			<link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css" />
         <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.0-rc.1.min.css" />
-        <script src="cordova.js"></script> 
+        <script src="cordova.js"></script>
+        
         <script src="js/jquery-1.10.2.min.js"></script> 
 				<script src="js/jquery.mobile-1.4.0-rc.1.min.js"></script> 
 				<script src="js/funciones.js"></script>
@@ -34,7 +35,7 @@ document.addEventListener("deviceready", onready, false);
     				  <h3>Men&uacute;</h3>
 							<ul data-role="listview" data-inset="false">
 								<li id="ll_mapa"><a href="javascript:verMapa();" data-rel="dialog" data-transition="pop" >Mapa</a></li>	
-								<li id="ll_off"><a href="javascript:checkInternet(2);" data-rel="dialog" data-transition="pop" >Sincronizar Marcaciones</a></li>									
+								<li id="ll_off"><a href="javascript:checkInternet(2);" data-rel="dialog" data-transition="pop" >Sincronizar Marcaciones <span id=id_sync></span></a></li>									
     	  	  		<li id="ll_cerrar"><a href="javascript:cerrarSesion();" data-rel="dialog" data-transition="pop" >Cerrar sesi&oacute;n</a></li>		
 			  	    </ul>		
 			  	    	    	
@@ -113,35 +114,7 @@ document.addEventListener("deviceready", onready, false);
     	</div>
     	  
  		</div>
- 		<div data-role="page" id="mod_sesion" data-theme="a">
-
-   	<div data-role="header" >
-   			 
-      		<h1><img src="images/obvii-logo-white.png">     		 </h1>  		 
-      		
-   		</div>    		
-   	  <div data-role="content" id="contenido" >
-   	  	<div data-role="popup" id="myPopup_ses">
-							<p>This is a completely basic popup, no options set.						</p>
-					</div>
-    	  	
-					<div class="ui-bar ui-bar-a" id=barra_sup style="text-align:center;">
-					 Login
-					</div>
-    	    <p id="form_login">
-						
-						<input type="text" class=input_form name="mail_ses" id="mail_ses" value="" placeholder="Correo electronico">						
-						<input type="password" class=input_form name="clave_ses" id="clave_ses"  autocomplete="off" placeholder="Contrase&ntilde;a">						
-						<input type="button" onclick="inicioSesion();" value="Ingresar">
-						<!--input type="button" onclick="cambiar('mod_registro');" value="Registrarme"-->
-						<div id="msg_error_ses" class="msg_error"></div>
-					</p>          
-					<p id="form_login">
-						<input type="button" onclick="cambiar('mod_recuperar');" value="Recuperar Contrase&ntilde;a">
-					</p>
-    	</div>
-    	  
- 		</div> 		
+	
  		<div data-role="page" id="mod_info" data-theme="a">
 
    	<div data-role="header" >
@@ -158,15 +131,24 @@ document.addEventListener("deviceready", onready, false);
 						<span class=titulo_interior>Asistencia Remota</span>
 						<br><br>
 						<span class=texto_interior>Te permite registrar asistencia en cualquier lugar, siempre y cuando tengas conexi&oacute;n a Internet, mediante 3G o Wifi.</span>
-						<span class=titulo_interior><br><br>Actualmente se encuentra trabajando Offline/local debido a que no tiene Internet activado.<br><br>Esto limita las opciones del sistema y todas las operaciones realizadas bajo este modo se actualizar&aacute;n en la nube una vez que se conecte a internet a trav&eacute;s de la opci&oacute;n "Sincronizar Marcaciones" del men&uacute;.<br><br>Con el boton Informaci&oacute;n el sistema revisa si hay o no internet disponible.<br><br><br>Se aconseja conectarse a internet lo antes posible.</span>
+					</p>
+						<div class="ui-bar ui-bar-a" id=barra_sup style="text-align:center;">
+					 	Sincronizaci&oacute;n
+					</div>
+					
+					<p id="form_interior">	
+						<span id=texto_interior>Actualmente se encuentra trabajando Offline/local debido a que no tiene Internet activado.<br><br>Esto limita las opciones del sistema y todas las operaciones realizadas bajo este modo se actualizar&aacute;n en la nube una vez que se conecte a internet a trav&eacute;s de la opci&oacute;n "Sincronizar Marcaciones" del men&uacute;.<br><br>Con el boton Informaci&oacute;n el sistema revisa si hay o no internet disponible.<br><br><br>Se aconseja conectarse a internet lo antes posible.</span>
 						
 					</p>      
 					
+    	    <div class="ui-bar ui-bar-a" id=barra_sup style="text-align:center;">
+					 Informaci&oacute;n
+					</div>
     	    <p id="form_interior">					
 						
-						<span class=texto_interior>Todos los derechos reservados a Architeq.cl <br>Cualquier inquietud comun&iacute;cate v&iacute;a contacto@architeq.cl</span>
+						<span class=texto_interior>Cualquier inquietud comun&iacute;cate v&iacute;a contacto@architeq.cl<br>Todos los derechos reservados a Architeq.cl</span>
 						
-					</p>      
+					</p>               
 					
     	</div>
     	  

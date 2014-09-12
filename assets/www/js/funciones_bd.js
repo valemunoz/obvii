@@ -12,6 +12,7 @@ var NOM_MARCA=Array();
 var FECHA_MARCA=Array();
 var LAT_MARCA=Array();
 var LON_MARCA=Array();
+var TOT_MARCAS=0;
 var DSCRIP_MARCA=Array();
 var DIR_MARCA=Array();
 
@@ -30,6 +31,7 @@ var tx_db;
 var DEVICE_ONLINE=false;
 function onready()
 {
+	
 	$.mobile.loading( 'show', {
 			text: 'Cargando...',
 			textVisible: true,
@@ -42,13 +44,13 @@ function onready()
 	if(navigator.connection.type == Connection.NONE)
  	{
  		onOffline();
- 		onready2();
+ 		
  	}else
  	{
  		onOnline();
- 		onready2();
+ 		
 	}
-
+  onready2();
 }
 function onready2()
 {
@@ -61,10 +63,12 @@ function onready2()
     setTimeout("loadInicioOff();",1000);
         			
   }else
-  {  	
+  {
+  	  	
   	$("#output").load(path_query2, 
 			{tipo:1} 
 			,function(){
+				selectMarcaBDlocal();
 				$.mobile.loading( 'hide');
 			}
 		);
@@ -110,8 +114,7 @@ function loadFavOff()
 }
 function loadMenuOff()
 {
-	
-	$(".ui-page-active .maintenance_tabs").empty();
+		$(".ui-page-active .maintenance_tabs").empty();
 	var bar='<div data-role="navbar" id=list_nav class="maintenance_tabs">';
 	bar +='<ul id="myNavbar">';
 	bar +='<li ><a  href="javascript:loadFavOff();" class="ui-btn-active"><img src="images/fav2.png"></a></li>';
@@ -416,6 +419,19 @@ function selectMarcaBDlocal()
 }
 function selectMarca(tx, rs)
 {		
+ 	TOT_MARCAS=rs.rows.length;	
+ 	
+ 	if(TOT_MARCAS > 0)
+ 	{
+ 		$("#id_sync").html("("+TOT_MARCAS+")");		
+ 		$("#id_sync_wel").html("<strong>("+TOT_MARCAS+")</strong>");		
+ 		
+ 	}else
+ 		{
+ 			$("#id_sync").html("("+TOT_MARCAS+")");		
+ 			$("#id_sync_wel").html("");		 		
+ 		}
+ 		
  				
  	for (var i = 0; i < rs.rows.length; i++) 
  	{
@@ -614,6 +630,7 @@ function processSyc()
 							{
 								cleanMarcaBD();
 								loadHistorial();
+								selectMarcaBDlocal();
 								mensaje("Marcaciones sincronizadas",'MENSAJE','myPopup');
 							}
 						//$('#contenido_sesion').trigger('create');
@@ -782,3 +799,5 @@ function deleteUser()
 	}, errorCB, successCB);    
 	   
 }
+
+
