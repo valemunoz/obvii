@@ -508,7 +508,7 @@ function marcarSalida(id_lugar)
 				theme: 'a',
 				html: ""
 			});
-		checkInternet(4);		
+		//checkInternet(4);		
 		navigator.geolocation.getCurrentPosition (function (pos)
 		{
 			
@@ -555,7 +555,7 @@ function marcarLugar(id_lugar,comenta)
 				theme: 'a',
 				html: ""
 			});
-		checkInternet(4);
+		//checkInternet(4);
 		navigator.geolocation.getCurrentPosition (function (pos)
 		{
 			var lat = pos.coords.latitude;
@@ -606,7 +606,7 @@ function marcarLugarCom(id_lugar)
 				theme: 'a',
 				html: ""
 			});
-			checkInternet(4);
+			//checkInternet(4);
 		navigator.geolocation.getCurrentPosition (function (pos)
 		{
 			var lat = pos.coords.latitude;

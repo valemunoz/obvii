@@ -27,8 +27,7 @@ var db = openDatabase('MyDB', '1.0', 'My Sample DB', 10000 * 1024);
 var tx_db;
 var DEVICE_ONLINE=false;
 function onready()
-{
-	
+{	
 	$.mobile.loading( 'show', {
 			text: 'Cargando...',
 			textVisible: true,
@@ -121,11 +120,12 @@ function loadMenuOff()
 {
 		$(".ui-page-active .maintenance_tabs").empty();
 	var bar='<div data-role="navbar" id=list_nav class="maintenance_tabs">';
+	
 	bar +='<ul id="myNavbar">';
-	bar +='<li ><a  href="javascript:checkInternet(5);" class="ui-btn-active"><img src="images/fav2.png"></a></li>';
-	bar +='<li ><a  href="javascript:checkInternet(4);"><img src="images/icon-servicios.png"></a></li>';							
-	bar +='<li><a href="javascript:checkInternet(2);"><img src="images/historial.png"></a></li>';
-	bar +='<li><a href=javascript:checkInternet(1);><img src="images/icon-info.png"></a></li>';
+	bar +='<li ><a  href="javascript:loadFavOff();" class="ui-btn-active"><img src="images/fav2.png"></a></li>';
+	bar +='<li ><a  href="javascript:loadHomeOff();"><img src="images/icon-servicios.png"></a></li>';							
+	bar +='<li><a href="javascript:loadHistorialOff();"><img src="images/historial.png"></a></li>';
+	bar +='<li><a href=javascript:cambiar("mod_info");><img src="images/icon-info.png"></a></li>';
 	bar +='</ul>';
 	bar +='</div>';				
   $(".ui-page-active .maintenance_tabs").append(bar).trigger('create');
@@ -819,4 +819,7 @@ function deleteUser()
 	   
 }
 
-
+function refreshSite()
+{
+	window.location.href="index.html";
+}

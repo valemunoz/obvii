@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.0-rc.1.min.css" />
         <script src="cordova.js"></script>
         
+        
         <script src="js/jquery-1.10.2.min.js"></script> 
 				<script src="js/jquery.mobile-1.4.0-rc.1.min.js"></script> 
 				<script src="js/funciones.js"></script>
@@ -19,10 +20,10 @@
         <link rel="stylesheet" href="css/style.mobile-jq.css" type="text/css">
    			<link rel="stylesheet" href="css/style.css" />
    			<!--script type="text/javascript" src="http://www.chilemap.cl/OpenLayers/OpenLayers.js"></script-->        
-   			
-        <script src="js/funciones_api_mobile_basica.js"></script>
+   			        <script src="js/funciones_api_mobile_basica.js"></script>
 <script>
-	navigator.splashscreen.show();
+document.addEventListener("offline", onready, false);
+document.addEventListener("online", onready, false);
 document.addEventListener("deviceready", onready, false);
 </script>
     </head>
