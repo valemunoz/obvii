@@ -5,10 +5,9 @@
 		<input type="button" onclick="loadLibreOff();" value="Marcaci&oacute;n Libre">
 				<ul data-role="listview"  data-theme="b"  data-filter="true" data-filter-placeholder="Buscar" data-inset="false" id="list_registros">	
 					
-			
+		
 			  </ul>	
-				<script>
-						
+				<script>					
 						var bar="";
 						if(NOM_LUGAR.length >0)
 						{
@@ -19,8 +18,7 @@
 								//alert(ID_LUGAR[i]);
 								bar +="<li ><a  href=javascript:addMarcaBDLocal(ID_LUGAR["+i+"],NOM_LUGAR["+i+"],TIP_LUGAR["+i+"],MARCACION_LUGAR["+i+"]);>"+NOM_LUGAR[i]+"</a><a href='javascript:loadEditarOff(ID_LUGAR["+i+"]);' data-rel='popup' data-position-to='window' data-transition='pop' data-icon='search'>Editar</a></li>";
 								
-							}
-							
+							}							
 						}
 						$("#list_registros").append(bar);
 						}else

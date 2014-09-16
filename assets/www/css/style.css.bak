@@ -1,6 +1,6 @@
 #barra_sup
 {
-	font-size:110%;
+	font-size:100%;
 	font-weight:bold;
 	background-color:#D1CFD2 !important;
 	height:5%;
@@ -82,7 +82,7 @@
 }
 #myPopup
 {
-	max-height:200px !important;
+	max-height:30% !important;
 	min-width:200px !important;
 	overflow-y: auto;	
 	overflow-x:hidden; 
@@ -133,14 +133,14 @@
 }
 .titulo_interior
 {
-	font-size:100% !important;
+	font-size:90% !important;
 	color:#4E4E4E;
 	font-weight:bold;
 	
 }
 .texto_interior
 {
-	font-size:90% !important;
+	font-size:80% !important;
 	color:#7F7F7F !important;
 }
 #contenido_sesion
@@ -230,11 +230,16 @@
 #id_sync_info
 {
 	margin:20px;
-	font-size:90% !important;
+	font-size:80% !important;
 	color:#909090;
 	text-align:left;
 }
 #bienvenido_div
 {
-	font-size:85% !important;
+	font-size:70% !important;
+}
+#list_registros li
+{
+	height:40px !important;
+	font-weight:bold;
 }

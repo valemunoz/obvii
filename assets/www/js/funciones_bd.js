@@ -15,7 +15,6 @@ var LON_MARCA=Array();
 var TOT_MARCAS=0;
 var DSCRIP_MARCA=Array();
 var DIR_MARCA=Array();
-
 var TIP_MARCA=Array();
 var sync_marca=false;				
 var dat=new Date();
@@ -23,9 +22,7 @@ var dia=dat.getDate();
 var ano=dat.getFullYear();
 var mes=dat.getMonth();
 mes=mes+1;
-
 var SELECT_USER=false;
-
 var db = openDatabase('MyDB', '1.0', 'My Sample DB', 10000 * 1024);
 var tx_db;
 var DEVICE_ONLINE=false;
@@ -55,15 +52,20 @@ function onready()
 function onready2()
 {
 	loadBD();      
-			
+		
   if(!DEVICE_ONLINE)
-  {
-  
+  {  
   	selectUserBDlocal();        			        			
     setTimeout("loadInicioOff();",1000);
         			
   }else
   {
+  	$.getScript( "http://www.chilemap.cl/OpenLayers/OpenLayers.js", function( data, textStatus, jqxhr ) {
+  /*console.log( data ); // Data returned
+  console.log( textStatus ); // Success
+  console.log( jqxhr.status ); // 200
+  console.log( "Load was performed." );*/
+		});
   	  	
   	$("#output").load(path_query2, 
 			{tipo:1} 
@@ -89,11 +91,14 @@ function loadInicioOff()
 		selectLugarBDlocal();
 		
 		setTimeout("loadFavOff();",1000);
+		$.mobile.loading( 'hide');
 		mensaje("No tiene conecci&oacute;n a internet activada.<br>El sistema trabajara de manera Local/Offline<br>Algunas opciones seran limitadas",'Alerta','myPopup');
 	}else
 	{
-		cambiar("mod_sesion");
-		mensaje("No tiene conexion a internet y no tiene una sesion activa.<br>Por favor conectese a una red para continuar",'ERROR','myPopup_ses');
+		$.mobile.loading( 'hide');
+		inicio_ses();
+		//cambiar("mod_sesion");
+		mensaje("No tiene conexion a internet y no tiene una sesion activa.<br>Por favor conectese a una red para continuar",'ERROR','myPopup');
 	}
 }
 function loadFavOff()
@@ -117,9 +122,9 @@ function loadMenuOff()
 		$(".ui-page-active .maintenance_tabs").empty();
 	var bar='<div data-role="navbar" id=list_nav class="maintenance_tabs">';
 	bar +='<ul id="myNavbar">';
-	bar +='<li ><a  href="javascript:loadFavOff();" class="ui-btn-active"><img src="images/fav2.png"></a></li>';
-	bar +='<li ><a  href="javascript:loadHomeOff();"><img src="images/icon-servicios.png"></a></li>';							
-	bar +='<li><a href="javascript:loadHistorialOff();"><img src="images/historial.png"></a></li>';
+	bar +='<li ><a  href="javascript:checkInternet(5);" class="ui-btn-active"><img src="images/fav2.png"></a></li>';
+	bar +='<li ><a  href="javascript:checkInternet(4);"><img src="images/icon-servicios.png"></a></li>';							
+	bar +='<li><a href="javascript:checkInternet(2);"><img src="images/historial.png"></a></li>';
 	bar +='<li><a href=javascript:checkInternet(1);><img src="images/icon-info.png"></a></li>';
 	bar +='</ul>';
 	bar +='</div>';				
@@ -403,8 +408,14 @@ function addMarcaOff(id_marca_glob,nom_marca_glob,descrip_marca,marcacion)
 					}, errorCB, successCB);
 					$.mobile.loading( 'hide');
 		  		mensaje("Marcacion realizada localmente",'Mensaje','myPopup');
-				},noLocation,{timeout:6000});
+				},noLocationOff,{timeout:6000});
 	
+}
+function noLocationOff(error)
+{
+		$.mobile.loading( 'hide');
+	
+		mensaje("Se produjo un error en la lectura de su posici&oacute;n.<br>Esto se puede suceder al no darle permisos al sistema para obtener su ubicacion actual o bien no tiene disponible GPS en el equipo.<br>Por favor revise su configuracion e intentelo nuevamente",'ERROR','myPopup');
 }
 
 function selectMarcaBDlocal()
@@ -547,28 +558,36 @@ function checkInternet(tip)
  				if(tip==1)
 				{
 					cambiar("mod_info");
+				}	
+				if(tip==2)
+				{
+					loadHistorialOff();
+				}	
+				if(tip==4)
+				{
+					loadHomeOff();
 				}				
-				
+				if(tip==5)
+				{
+					loadFavOff();
+				}				
 			}
  	}else
  	{
  		//onOnline();
  		if(!DEVICE_ONLINE)
  		{
- 			window.location.href="index.html";
- 			
+ 			window.location.href="index.html";s 			
  		}else
  			{
  				if(tip==1)
 				{
-					loadInfo();
-					
+					loadInfo();					
 				}
 					if(tip==2)
 				{
 					syncMarca();
-				}
-				
+				}				
 			}
  		
 	}

@@ -82,7 +82,7 @@
 }
 #myPopup
 {
-	max-height:200px !important;
+	max-height:30% !important;
 	min-width:200px !important;
 	overflow-y: auto;	
 	overflow-x:hidden; 
