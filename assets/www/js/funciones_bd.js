@@ -1,4 +1,4 @@
-var NOMBRE_USER,ID_USER,ID_OBVII_USER,ESTADO_USER,ID_TIPO_USUARIO;
+var NOMBRE_USER,ID_USER,ID_OBVII_USER,ESTADO_USER,ID_TIPO_USUARIO,ID_ESTADO_ACTIVO, CLAVE_USUARIO,NUBE_USUARIO,LOCAL_USUARIO;
 var MAIL_USER="";
 var ID_LUGAR=Array();
 var NOM_LUGAR=Array();
@@ -9,6 +9,8 @@ var TIP_LUGAR=Array();
 var MARCACION_LUGAR=Array();
 var ID_MARCA=Array();
 var NOM_MARCA=Array();  
+var NUBE_MARCA=Array();
+var LOCAL_MARCA=Array();
 var FECHA_MARCA=Array();
 var LAT_MARCA=Array();
 var LON_MARCA=Array();
@@ -25,9 +27,75 @@ mes=mes+1;
 var SELECT_USER=false;
 var db = openDatabase('MyDB', '1.0', 'My Sample DB', 10000 * 1024);
 var tx_db;
+var uuid_user=0;
 var DEVICE_ONLINE=false;
+
+var dateLocal="";
+var dateNube;
+var diffHoraria=false;
+
+
+$(function(){
+  setInterval(function(){  
+  	
+					d = new Date();
+					fmes=d.getMonth();
+					fmes=fmes+1;
+					if(fmes < 10)
+					  fmes="0"+fmes;
+					
+					var fdia=d.getDate();
+					if(fdia < 10)
+					  fdia="0"+fdia;
+					  
+					var fhora=d.getHours();
+					if(fhora < 10)
+					  fhora="0"+fhora;
+
+					var fmin=d.getMinutes();
+					if(fmin < 10)
+					  fmin="0"+fmin;  
+					
+					var fsec=d.getSeconds();
+					if(fsec < 10)
+					  fsec="0"+fsec;      			
+    			var dateLocal_new = new Date(''+d.getFullYear()+'-'+fmes+'-'+fdia+' '+fhora+':'+fmin+':'+fsec+'');
+    			if(dateLocal=="")
+    			{    				
+    				dateNube=new Date(''+NUBE_USUARIO.substr(0, 10)+' '+NUBE_USUARIO.substr(11)+'');    				
+    				
+    				if(LOCAL_USUARIO=="local" || LOCAL_USUARIO=="")
+    				{
+    					dateLocal=new Date(''+d.getFullYear()+'-'+fmes+'-'+fdia+' '+fhora+':'+fmin+':'+fsec+'');
+    					
+    				}else
+    					{
+    						dateLocal= new Date(''+LOCAL_USUARIO.substr(0, 10)+' '+LOCAL_USUARIO.substr(11)+'');
+    					}
+    				
+    				//alert(''+LOCAL_USUARIO.substr(0, 10)+' '+LOCAL_USUARIO.substr(11)+'');
+    			}
+    				
+    			
+    			if(dateLocal_new > dateLocal)
+    			{    				
+    				dateLocal=dateLocal_new;    				
+    				updateLocalDateUser(''+d.getFullYear()+'-'+fmes+'-'+fdia+' '+fhora+':'+fmin+':'+fsec+'');
+    				diffHoraria=false; 				
+    			}else
+    			{
+    					diffHoraria=true;
+    					//alert("Diferencia horaria");
+    			}
+    			//alert(dateLocal);
+  },5000);
+});
+
 function onready()
 {	
+	uuid_user = device.uuid;
+	$("#uuid_text").html("ID device: "+uuid_user);
+	//alert(uuid_user);
 	$.mobile.loading( 'show', {
 			text: 'Cargando...',
 			textVisible: true,
@@ -54,7 +122,8 @@ function onready2()
 		
   if(!DEVICE_ONLINE)
   {  
-  	selectUserBDlocal();        			        			
+  	selectUserBDlocal();  
+  	      			        			
     setTimeout("loadInicioOff();",1000);
         			
   }else
@@ -79,7 +148,7 @@ function onready2()
 function loadInicioOff()
 {
 	
-	if(SELECT_USER)
+	if(SELECT_USER && ID_ESTADO_ACTIVO==0 && ESTADO_USER==0)
 	{
 		
 		$("#ll_mapa").hide();
@@ -96,8 +165,22 @@ function loadInicioOff()
 	{
 		$.mobile.loading( 'hide');
 		inicio_ses();
+			
 		//cambiar("mod_sesion");
-		mensaje("No tiene conexion a internet y no tiene una sesion activa.<br>Por favor conectese a una red para continuar",'ERROR','myPopup');
+		
+		if(ID_ESTADO_ACTIVO==1)
+		{
+			mensaje("Su usuario no esta activado para iniciar sesion en este dispositivo",'ERROR','myPopup');
+		}else
+		{
+			if(ESTADO_USER==1)
+			{
+				
+			}else
+			{
+				mensaje("No tiene conexion a internet y no tiene una sesion activa.<br>Por favor conectese a una red para continuar",'ERROR','myPopup');
+			}
+		}
 	}
 }
 function loadFavOff()
@@ -118,6 +201,7 @@ function loadFavOff()
 }
 function loadMenuOff()
 {
+	
 		$(".ui-page-active .maintenance_tabs").empty();
 	var bar='<div data-role="navbar" id=list_nav class="maintenance_tabs">';
 	
@@ -141,21 +225,22 @@ function loadBD()
 	
  db.transaction(function(tx) 
  {
- 	tx_db=tx;
- 	  //tx.executeSql('DROP TABLE IF EXISTS marca');
-    tx.executeSql('create table if not exists usuario(id, name, mail, estado, id_obvii)');    
+ 	
+ 	  //tx.executeSql('DROP TABLE IF EXISTS marca'); 	  
+    tx.executeSql('create table if not exists usuario(id, name, mail, estado, id_obvii, nube,activo,clave,local)');    
+    
     tx.executeSql('create table if not exists lugar(id, name, direccion, fecha, fav,tipo,marcacion)');    
-    tx.executeSql('create table if not exists marca(id, name,lati,loni,fecha,descripc,tipo,direccion)');  
+    tx.executeSql('create table if not exists marca(id, name,lati,loni,fecha,descripc,tipo,direccion,fec_nube,fec_local)');  
 	}, errorCB, successCB);    
 
 }
-function addUsuarioBDLocal(id_us,nom_us,mail_us,est_us,id_obvii_us,tipo_us)
+function addUsuarioBDLocal(id_us,nom_us,mail_us,est_us,id_obvii_us,tipo_us,clave_us)
 {
 	//alert("paso add usuario");
 	 db.transaction(function(tx) {
  			tx.executeSql('DROP TABLE IF EXISTS usuario');
- 			tx.executeSql('create table if not exists usuario(id, name, mail, estado, id_obvii)');
-			tx.executeSql('insert into usuario(id, name, mail, estado,id_obvii) values (?,?,?,?,?)',[id_us,nom_us,mail_us, est_us,id_obvii_us]);
+ 			tx.executeSql('create table if not exists usuario(id, name, mail, estado, id_obvii, nube, activo,clave,local)');
+			tx.executeSql('insert into usuario(id, name, mail, estado,id_obvii,nube,activo,clave,local) values (?,?,?,?,?,?,?,?,?)',[id_us,nom_us,mail_us, est_us,id_obvii_us,'nube',0,clave_us,'local']);
 	}, errorCB, successCB);
 	
 }
@@ -166,7 +251,6 @@ function selectUserBDlocal()
  		
     
 	}, errorCB, successCB); 
-
 }
 function selectUsuario(tx, results)
 {
@@ -183,10 +267,18 @@ function selectUsuario(tx, results)
  	    	MAIL_USER = results.rows.item(i).mail;
  	    	ID_USER = results.rows.item(i).id;
  	    	ID_OBVII_USER = results.rows.item(i).id_obvii;
- 	    	ESTADO_USER = results.rows.item(i).estado;
+ 	    	ID_ESTADO_ACTIVO= results.rows.item(i).activo;
+ 	    	CLAVE_USUARIO= results.rows.item(i).clave;
+ 	    	ESTADO_USER = results.rows.item(i).estado; 	    	
+ 	    	NUBE_USUARIO= results.rows.item(i).nube;
+ 	    	LOCAL_USUARIO= results.rows.item(i).local;
+ 	    	//alert(LOCAL_USUARIO);
+ 	    	
+ 	  }
+ 	    
 	}
   	
-}
+
 function successCB(e)
 {
 	//alert("exitoso bd");
@@ -276,6 +368,7 @@ function loadLugaresON()
 }
 function loadHomeOff()
 {
+	
 	$.mobile.loading( 'show', {
 			text: 'Cargando Lugares...',
 			textVisible: true,
@@ -309,7 +402,7 @@ function loadInfoOff()
 }
 function addMarcaBDLocal(id_marca_glob,nom_marca_glob,tipo,marcacion)
 {
-
+		selectUserBDlocal();
 		if($.trim(marcacion)=="t" || $.trim(tipo)=='t')
 		{
 			nom_marca_glob=encodeURIComponent(nom_marca_glob);
@@ -346,6 +439,7 @@ function loadComentarioOff(id_marca_glob,nom_marca_glob)
 }
 function addMarcaOff(id_marca_glob,nom_marca_glob,descrip_marca,marcacion)
 {
+
 	if(marcacion==10)
 	{
 	   
@@ -402,20 +496,100 @@ function addMarcaOff(id_marca_glob,nom_marca_glob,descrip_marca,marcacion)
 
 					fecha=""+d.getFullYear()+"-"+fmes+"-"+fdia+" "+fhora+":"+fmin+":"+fsec+"";
 					//alert(fecha);
+					ffmonth=dateLocal.getMonth();
+					ffmonth=ffmonth+1;
+					if(ffmonth < 10)
+					{
+						ffmonth="0"+ffmonth;
+					}
+					ffmonth2=dateNube.getMonth();
+					ffmonth2=ffmonth2+1;
+					if(ffmonth2 < 10)
+					{
+						ffmonth2="0"+ffmonth2;
+					}
+					
+					var ff_nube=''+dateNube.getFullYear()+'-'+ffmonth2+'-'+dateNube.getDate()+' '+dateNube.getHours()+':'+dateNube.getMinutes()+':'+dateNube.getSeconds()+'';
+					var ff_local=''+dateLocal.getFullYear()+'-'+ffmonth+'-'+dateLocal.getDate()+' '+dateLocal.getHours()+':'+dateLocal.getMinutes()+':'+dateLocal.getSeconds()+'';
+
 					db.transaction(function(tx) {	 	    
-    				tx.executeSql('INSERT INTO marca (id, name,lati,loni,fecha,descripc,tipo,direccion) VALUES ("'+id_marca_glob+'","'+nom_marca_glob+'","'+OBVII_LAT+'","'+OBVII_LON+'","'+fecha+'","'+descrip_marca+'","'+marcacion+'","vacio")');
+    				tx.executeSql('INSERT INTO marca (id, name,lati,loni,fecha,descripc,tipo,direccion,fec_nube,fec_local) VALUES ("'+id_marca_glob+'","'+nom_marca_glob+'","'+OBVII_LAT+'","'+OBVII_LON+'","'+fecha+'","'+descrip_marca+'","'+marcacion+'","vacio","'+ff_nube+'","'+ff_local+'")');
       		
 					}, errorCB, successCB);
 					$.mobile.loading( 'hide');
 		  		mensaje("Marcacion realizada localmente",'Mensaje','myPopup');
-				},noLocationOff,{timeout:6000});
+				},function (err){
+					$.mobile.loading( 'hide');
+		//alert(DEVICE_ONLINE);
+	  if(!DEVICE_ONLINE)
+	  {
+	  	$.mobile.loading( 'show', {
+						text: 'Marcando...',
+						textVisible: true,
+						theme: 'a',
+						html: ""
+					});
+					
+					var fecha;
+					var d = new Date();
+					var fmes=d.getMonth();
+					fmes=fmes+1;
+					if(fmes < 10)
+					  fmes="0"+fmes;
+					
+					var fdia=d.getDate();
+					if(fdia < 10)
+					  fdia="0"+fdia;
+					  
+					var fhora=d.getHours();
+					if(fhora < 10)
+					  fhora="0"+fhora;
+
+					var fmin=d.getMinutes();
+					if(fmin < 10)
+					  fmin="0"+fmin;  
+					
+					var fsec=d.getSeconds();
+					if(fsec < 10)
+					  fsec="0"+fsec;  
+
+					fecha=""+d.getFullYear()+"-"+fmes+"-"+fdia+" "+fhora+":"+fmin+":"+fsec+"";
+					//alert(fecha);
+					ffmonth=dateLocal.getMonth();
+					ffmonth=ffmonth+1;
+					if(ffmonth < 10)
+					{
+						ffmonth="0"+ffmonth;
+					}
+					ffmonth2=dateNube.getMonth();
+					ffmonth2=ffmonth2+1;
+					if(ffmonth2 < 10)
+					{
+						ffmonth2="0"+ffmonth2;
+					}
+					
+					var ff_nube=''+dateNube.getFullYear()+'-'+ffmonth2+'-'+dateNube.getDate()+' '+dateNube.getHours()+':'+dateNube.getMinutes()+':'+dateNube.getSeconds()+'';
+					var ff_local=''+dateLocal.getFullYear()+'-'+ffmonth+'-'+dateLocal.getDate()+' '+dateLocal.getHours()+':'+dateLocal.getMinutes()+':'+dateLocal.getSeconds()+'';
+
+					db.transaction(function(tx) {	 	    
+    				tx.executeSql('INSERT INTO marca (id, name,lati,loni,fecha,descripc,tipo,direccion,fec_nube,fec_local) VALUES ("'+id_marca_glob+'","'+nom_marca_glob+'","'+OBVII_LAT+'","'+OBVII_LON+'","'+fecha+'","'+descrip_marca+'","'+marcacion+'","vacio","'+ff_nube+'","'+ff_local+'")');
+      		
+					}, errorCB, successCB);
+					$.mobile.loading( 'hide');
+		  		mensaje("Marcacion realizada localmente",'Mensaje','myPopup');
+	  }else
+	  {
+			mensaje("Se produjo un error en la lectura de su posici&oacute;n.<br>Esto se puede suceder al no darle permisos al sistema para obtener su ubicacion actual o bien no tiene disponible GPS en el equipo.<br>Por favor revise su configuracion e intentelo nuevamente",'ERROR','myPopup');
+		}
+					
+					},{timeout:6000});
 	
 }
 function noLocationOff(error)
 {
 		$.mobile.loading( 'hide');
-	
-		mensaje("Se produjo un error en la lectura de su posici&oacute;n.<br>Esto se puede suceder al no darle permisos al sistema para obtener su ubicacion actual o bien no tiene disponible GPS en el equipo.<br>Por favor revise su configuracion e intentelo nuevamente",'ERROR','myPopup');
+			mensaje("Se produjo un error en la lectura de su posici&oacute;n.<br>Esto se puede suceder al no darle permisos al sistema para obtener su ubicacion actual o bien no tiene disponible GPS en el equipo.<br>Por favor revise su configuracion e intentelo nuevamente",'ERROR','myPopup');
+		
 }
 
 function selectMarcaBDlocal()
@@ -457,7 +631,10 @@ function selectMarca(tx, rs)
 			DSCRIP_MARCA[i]=rs.rows.item(i).descripc;
 			TIP_MARCA[i]=rs.rows.item(i).tipo;
 			DIR_MARCA[i]=rs.rows.item(i).direccion;
- 			//alert(rs.rows.item(i).descripc+" :: "+ID_MARCA[i]);    
+			
+			NUBE_MARCA[i]=rs.rows.item(i).fec_nube;
+			LOCAL_MARCA[i]=rs.rows.item(i).fec_local;
+ 			//alert(LOCAL_MARCA[i]);    
  	}
     		
   	
@@ -467,7 +644,7 @@ function cleanMarcaBD()
 	
 	db.transaction(function(tx) {  
  		tx.executeSql('DROP TABLE IF EXISTS marca');
-		tx.executeSql('create table if not exists marca(id, name,lati,loni,fecha,descripc,tipo,direccion)'); 
+		tx.executeSql('create table if not exists marca(id, name,lati,loni,fecha,descripc,tipo,direccion,fec_nube,fec_local)'); 
 	
 	}, errorCB, successCB); 
 
@@ -478,7 +655,10 @@ function cleanMarcaBD()
 	LON_MARCA=Array();
 	DSCRIP_MARCA=Array();
 	TIP_MARCA=Array();
+	
 	DIR_MARCA=Array();
+	NUBE_MARCA=Array();
+	LOCAL_MARCA=Array();
 }
 
 function loadHistorialOff()
@@ -617,7 +797,9 @@ function processSyc()
 	var dirs_marca="";
 	
 	var tips_marca="";   
-	
+	var nub_marca="";  
+	var loc_marca="";  
+
 	if(ID_MARCA.length > 0)
 	{
 		
@@ -630,28 +812,31 @@ function processSyc()
 			descips_marca +="|"+DSCRIP_MARCA[i];
 			tips_marca+="|"+TIP_MARCA[i];
 			noms_marca+="|"+NOM_MARCA[i];
-			dirs_marca+="|"+DIR_MARCA[i];
+			dirs_marca+="|"+DIR_MARCA[i];			
+			nub_marca+="|"+NUBE_MARCA[i];
+			loc_marca+="|"+LOCAL_MARCA[i];
 		}
-		sync_marca=true;
+
 		
-			
+		sync_marca=true;
+
+					
 		$("#output").load(path_query2, 
-				{tipo:7,ide:ids_marca,lat:lats_marca,lon:lons_marca,fecha:fechas_marca, decrip:descips_marca,tip:tips_marca,nombre:noms_marca,direc:dirs_marca} 
+				{tipo:7,ide:ids_marca,lat:lats_marca,lon:lons_marca,fecha:fechas_marca, decrip:descips_marca,tip:tips_marca,nombre:noms_marca,direc:dirs_marca,nub_marca:nub_marca,loc_marca:loc_marca} 
 					,function(){	
 						$("#mypanel").panel( "close" );
 						$.mobile.loading( 'hide');
-						
 						
 						if(!sync_marca)
 						{
 							mensaje("Problemas de conexi&oacute;n, por favor int&eacute;ntelo nuevamente.","ERROR","myPopup_ses");
 						}else
-							{
-								cleanMarcaBD();
-								loadHistorial();
-								selectMarcaBDlocal();
-								mensaje("Marcaciones sincronizadas",'MENSAJE','myPopup');
-							}
+						{
+							cleanMarcaBD();
+							loadHistorial();
+							selectMarcaBDlocal();
+							mensaje("Marcaciones sincronizadas",'MENSAJE','myPopup');
+						}
 						//$('#contenido_sesion').trigger('create');
 					}
 			);
@@ -781,22 +966,90 @@ function validaMarcacionOff()
 					  
 					fecha=""+d.getFullYear()+"-"+fmes+"-"+fdia+" "+fhora+":"+fmin+":"+fsec+"";
 					//alert(fecha);
+					ffmonth=dateLocal.getMonth();
+					ffmonth=ffmonth+1;
+					if(ffmonth < 10)
+					{
+						ffmonth="0"+ffmonth;
+					}
+					ffmonth2=dateNube.getMonth();
+					ffmonth2=ffmonth2+1;
+					if(ffmonth2 < 10)
+					{
+						ffmonth2="0"+ffmonth2;
+					}
+					var ff_nube=''+dateNube.getFullYear()+'-'+ffmonth2+'-'+dateNube.getDate()+' '+dateNube.getHours()+':'+dateNube.getMinutes()+':'+dateNube.getSeconds()+'';
+					var ff_local=''+dateLocal.getFullYear()+'-'+ffmonth+'-'+dateLocal.getDate()+' '+dateLocal.getHours()+':'+dateLocal.getMinutes()+':'+dateLocal.getSeconds()+'';
+					
 					db.transaction(function(tx) {	 	    
-    				tx.executeSql('INSERT INTO marca (id, name,lati,loni,fecha,descripc,tipo,direccion) VALUES ("0","'+nombre+'","'+OBVII_LAT+'","'+OBVII_LON+'","'+fecha+'","'+comenta+'","'+tipo_marca+'","'+calle+' #'+numero+', '+comuna+'")');
+    				tx.executeSql('INSERT INTO marca (id, name,lati,loni,fecha,descripc,tipo,direccion,fec_nube,fec_local) VALUES ("0","'+nombre+'","'+OBVII_LAT+'","'+OBVII_LON+'","'+fecha+'","'+comenta+'","'+tipo_marca+'","'+calle+' #'+numero+', '+comuna+'","'+ff_nube+'","'+ff_local+'")');
       		
 					}, errorCB, successCB);
 					$.mobile.loading( 'hide');
 		  		mensaje("Marcacion realizada localmente",'Mensaje','myPopup');
 		
-			/*$("#output").load(path_query, 
-			{tipo:13, mail:mail, nom:nombre, calle:calle,numero:numero,com:comuna,lat:lat,lon:lng,accu:accu,coment:comenta,marca:tipo_marca} 
-				,function(){	
-					$.mobile.loading( 'hide');
-				}
-			);*/
+			
 		
 			
-			},noLocation,{timeout:6000});
+			},function (err){
+				
+				$.mobile.loading( 'hide');
+			$.mobile.loading( 'show', {
+				text: 'Marcando...',
+				textVisible: true,
+				theme: 'a',
+				html: ""
+			});
+			
+				var fecha;
+					var d = new Date();
+					var fmes=d.getMonth();
+					fmes=fmes+1;
+					
+					if(fmes < 10)
+					  fmes="0"+fmes;
+					
+					var fdia=d.getDate();
+					
+					if(fdia < 10)
+					  fdia="0"+fdia;
+					  
+					var fhora=d.getHours();
+					if(fhora < 10)
+					  fhora="0"+fhora;
+
+					var fmin=d.getMinutes();
+					if(fmin < 10)
+					  fmin="0"+fmin;  
+					
+					var fsec=d.getSeconds();
+					if(fsec < 10)
+					  fsec="0"+fsec;  
+					  
+					fecha=""+d.getFullYear()+"-"+fmes+"-"+fdia+" "+fhora+":"+fmin+":"+fsec+"";
+					//alert(fecha);
+					ffmonth=dateLocal.getMonth();
+					ffmonth=ffmonth+1;
+					if(ffmonth < 10)
+					{
+						ffmonth="0"+ffmonth;
+					}
+					ffmonth2=dateNube.getMonth();
+					ffmonth2=ffmonth2+1;
+					if(ffmonth2 < 10)
+					{
+						ffmonth2="0"+ffmonth2;
+					}
+					var ff_nube=''+dateNube.getFullYear()+'-'+ffmonth2+'-'+dateNube.getDate()+' '+dateNube.getHours()+':'+dateNube.getMinutes()+':'+dateNube.getSeconds()+'';
+					var ff_local=''+dateLocal.getFullYear()+'-'+ffmonth+'-'+dateLocal.getDate()+' '+dateLocal.getHours()+':'+dateLocal.getMinutes()+':'+dateLocal.getSeconds()+'';
+					
+					db.transaction(function(tx) {	 	    
+    				tx.executeSql('INSERT INTO marca (id, name,lati,loni,fecha,descripc,tipo,direccion,fec_nube,fec_local) VALUES ("0","'+nombre+'","'+OBVII_LAT+'","'+OBVII_LON+'","'+fecha+'","'+comenta+'","'+tipo_marca+'","'+calle+' #'+numero+', '+comuna+'","'+ff_nube+'","'+ff_local+'")');
+      		
+					}, errorCB, successCB);
+					$.mobile.loading( 'hide');
+		  		mensaje("Marcacion realizada localmente",'Mensaje','myPopup');
+				},{timeout:6000});
 		
 		
 		
@@ -813,7 +1066,7 @@ function deleteUser()
  {
  	
  	  tx.executeSql('DROP TABLE IF EXISTS usuario');
-    tx.executeSql('create table if not exists usuario(id, name, mail, estado, id_obvii)');    
+    tx.executeSql('create table if not exists usuario(id, name, mail, estado, id_obvii,nube,activo,clave,local)');    
     window.location.href="index.html";
 	}, errorCB, successCB);    
 	   
@@ -822,4 +1075,44 @@ function deleteUser()
 function refreshSite()
 {
 	window.location.href="index.html";
+}
+function userOff()
+{
+	 db.transaction(function(tx) {
+ 			tx.executeSql("UPDATE usuario SET estado = 1");
+ 			window.location.href="index.html"; 
+	}, errorCB, successCB);
+	
+	   
+}
+
+function updateEstadoUser(estado)
+{
+	ESTADO_USER=estado;
+	 db.transaction(function(tx) {
+ 			tx.executeSql("UPDATE usuario SET estado = "+estado+"");
+ 			
+	}, errorCB, successCB);
+
+	   
+}
+function updateNubeUser(valor)
+{
+	
+	 db.transaction(function(tx) {
+ 			tx.executeSql("UPDATE usuario SET nube = '"+valor+"'");
+ 			
+	}, errorCB, successCB);
+	
+	   
+}
+function updateLocalDateUser(valor)
+{
+	
+	 db.transaction(function(tx) {
+ 			tx.executeSql("UPDATE usuario SET local = '"+valor+"'");
+ 			
+	}, errorCB, successCB);
+	
+	   
 }

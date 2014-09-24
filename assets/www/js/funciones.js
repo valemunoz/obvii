@@ -59,6 +59,10 @@ function mensaje(CM_mensaje,titulo,div)
 
 function inicioSesion()
 {
+	if(uuid_user==0)
+	{
+		uuid_user = device.uuid;
+	}
 	var mail=$.trim(document.getElementById("mail_ses").value);
 	var clave=$.trim(document.getElementById("clave_ses").value);
 	var msg="";
@@ -91,7 +95,7 @@ function inicioSesion()
 			html: ""
 		});
 		$("#output").load(path_query, 
-			{tipo:1, mail:mail, clave:clave} 
+			{tipo:1, mail:mail, clave:clave, uuid:uuid_user} 
 				,function(){	
 					$.mobile.loading( 'hide');
 				}
@@ -100,9 +104,25 @@ function inicioSesion()
 	{
 		if(!DEVICE_ONLINE)
 		{
-			msg="No tiene conexion a internet.<br>Por favor conectese a una red para poder iniciar sesi&oacute;n";
+			if(SELECT_USER && ESTADO_USER==1)
+			{
+				if(NOMBRE_USER==mail && CLAVE_USUARIO== clave)
+				{
+					updateEstadoUser(0);
+					
+    			setTimeout("loadInicioOff();",1000);
+				}else
+				{
+						msg="No tiene conexion a internet.<br>Por favor conectese a una red para poder iniciar sesi&oacute;n";
+						mensaje(msg,'ERROR','myPopup_ses');
+				}
+			}else
+			{
+				msg="No tiene conexion a internet.<br>Por favor conectese a una red para poder iniciar sesi&oacute;n";
+				mensaje(msg,'ERROR','myPopup_ses');
+			}
 		}
-			mensaje(msg,'ERROR','myPopup_ses');
+			
 	}
 }
 
@@ -232,7 +252,8 @@ function cerrarSesion()
 		);
 	}else
 		{
-			deleteUser();
+			//deleteUser();
+			userOff();
 		}
 }
 function addUsuario()
@@ -836,7 +857,8 @@ function inicio_ses()
 				,function(){	
 					
 					$.mobile.loading( 'hide');
-					$('#contenido_sesion').trigger('create');				
+					$('#contenido_sesion').trigger('create');	
+					document.getElementById("mail_ses").value=MAIL_USER;			
 					
 				}
 			);
