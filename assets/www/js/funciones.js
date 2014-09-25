@@ -102,6 +102,12 @@ function inicioSesion()
 		);
 	}else
 	{
+		
+		if(!valida)
+		{
+			
+			mensaje(msg,'ERROR','myPopup_ses');
+		}
 		if(!DEVICE_ONLINE)
 		{
 			if(SELECT_USER && ESTADO_USER==1)
@@ -247,6 +253,7 @@ function cerrarSesion()
 		$("#contenido_sesion").load(path_query, 
 			{tipo:3} 
 				,function(){	
+					
 					window.location.href="index.html";
 				}
 		);

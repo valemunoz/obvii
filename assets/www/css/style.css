@@ -238,3 +238,11 @@
 {
 	font-size:70% !important;
 }
+.msg_error
+{
+	color:#0091E4 !important;
+	font-weight:bold;
+	font-size:80% !important;	 
+	width=50%;
+	margin-left:20%;
+}

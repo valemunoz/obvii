@@ -37,9 +37,10 @@ document.addEventListener("deviceready", onready, false);
     				  <h3>Men&uacute;</h3>
 							<ul data-role="listview" data-inset="false">
 								<li id="ll_mapa"><a href="javascript:verMapa();" data-rel="dialog" data-transition="pop" >Mapa</a></li>	
-								<li id="ll_off"><a href="javascript:checkInternet(2);" data-rel="dialog" data-transition="pop" >Sincronizar Marcaciones <span id=id_sync></span></a></li>									
+								<li id="ll_off"><a href="javascript:checkInternet(2);" data-rel="dialog" data-transition="pop" >Sincronizar Marcaciones <span id=id_sync></span></a></li>
+								<li><a href="javascript:sendDevice();" data-rel="dialog" data-transition="pop" >Activar Dispositivo</a></li>									
     	  	  		<li id="ll_cerrar"><a href="javascript:cerrarSesion();" data-rel="dialog" data-transition="pop" >Cerrar sesi&oacute;n</a></li>		
-			  	    </ul>		
+			  	    </ul>	
 			  	    	    	
 			  	  </div>
 			  	  <br><span class="titulo3" id="uuid_text"></span>
@@ -192,7 +193,7 @@ document.addEventListener("deviceready", onready, false);
 						
 						<span class=texto_interior>Cualquier inquietud comun&iacute;cate v&iacute;a contacto@architeq.cl<br>Todos los derechos reservados a Architeq.cl</span>
 						
-					</p>               
+					</p>              
 					
     	</div>
     	  

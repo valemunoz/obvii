@@ -272,7 +272,8 @@ function selectUsuario(tx, results)
  	    	ESTADO_USER = results.rows.item(i).estado; 	    	
  	    	NUBE_USUARIO= results.rows.item(i).nube;
  	    	LOCAL_USUARIO= results.rows.item(i).local;
- 	    	//alert(LOCAL_USUARIO);
+ 	    	//alert(ESTADO_USER);
+ 	    	//alert(MAIL_USER);
  	    	
  	  }
  	    
@@ -1115,4 +1116,42 @@ function updateLocalDateUser(valor)
 	}, errorCB, successCB);
 	
 	   
+}
+
+function sendDevice()
+{
+	var mail=$.trim(document.getElementById("mail_ses").value);
+	$("#mypanel").panel( "close" );
+	if(mail=="" || !validarEmail(mail))
+	{
+		//mensaje("Debe ingresar un mail valido para solicitar dispositivo.",'Error','myPopup');
+		 $("#msg_error_ses").html("Debe ingresar un mail valido para solicitar dispositivo.");
+		 $('#mail_ses').focus();
+	}else
+		{
+			
+			$.mobile.loading( 'show', {
+				text: 'Enviando...',
+				textVisible: true,
+				theme: 'a',
+				html: ""
+			});
+		if(DEVICE_ONLINE)
+		{
+			
+			$("#output").load(path_query2, 
+				{tipo:8,uuid_user:uuid_user,mail:mail} 
+					,function(){
+							
+								
+					}
+			);
+			
+		}else
+		{
+			$.mobile.loading( 'hide');			
+			mensaje("No tiene conecci&oacute;n a internet activada.<br>Para solicitar dispositivo debe estar conectado a internet.",'Alerta','myPopup');			
+		}
+		$("#msg_error_ses").html("");
+	}
 }
