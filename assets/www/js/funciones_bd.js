@@ -93,9 +93,10 @@ $(function(){
 
 function onready()
 {	
+	
 	uuid_user = device.uuid;
 	$("#uuid_text").html("ID device: "+uuid_user);
-	//alert(uuid_user);
+	
 	$.mobile.loading( 'show', {
 			text: 'Cargando...',
 			textVisible: true,
@@ -118,26 +119,27 @@ function onready()
 }
 function onready2()
 {
+	
 	loadBD();      
 		
   if(!DEVICE_ONLINE)
   {  
+  	
   	selectUserBDlocal();  
   	      			        			
     setTimeout("loadInicioOff();",1000);
         			
   }else
   {
-  	$.getScript( "http://www.chilemap.cl/OpenLayers/OpenLayers.js", function( data, textStatus, jqxhr ) {
-  /*console.log( data ); // Data returned
-  console.log( textStatus ); // Success
-  console.log( jqxhr.status ); // 200
-  console.log( "Load was performed." );*/
-		});
+  	
+  	/*$.getScript( "http://www.chilemap.cl/OpenLayers/OpenLayers.js", function( data, textStatus, jqxhr ) {
+
+		});*/
   	  	
   	$("#output").load(path_query2, 
 			{tipo:1} 
 			,function(){
+				
 				selectMarcaBDlocal();
 				$.mobile.loading( 'hide');
 			}
@@ -226,7 +228,7 @@ function loadBD()
  db.transaction(function(tx) 
  {
  	
- 	  //tx.executeSql('DROP TABLE IF EXISTS marca'); 	  
+ 	 
     tx.executeSql('create table if not exists usuario(id, name, mail, estado, id_obvii, nube,activo,clave,local)');    
     
     tx.executeSql('create table if not exists lugar(id, name, direccion, fecha, fav,tipo,marcacion)');    
@@ -246,6 +248,7 @@ function addUsuarioBDLocal(id_us,nom_us,mail_us,est_us,id_obvii_us,tipo_us,clave
 }
 function selectUserBDlocal()
 {
+	
 	db.transaction(function(tx) {  
  		tx.executeSql('SELECT * FROM usuario', [], selectUsuario, errorCB);
  		
