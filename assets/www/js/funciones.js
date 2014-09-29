@@ -853,6 +853,7 @@ function moveOn()
 
 function inicio_ses()
 {
+	$("#ll_dip").show(); 
 	$.mobile.loading( 'show', {
 				text: '...',
 				textVisible: true,
@@ -866,6 +867,23 @@ function inicio_ses()
 					$.mobile.loading( 'hide');
 					$('#contenido_sesion').trigger('create');	
 					document.getElementById("mail_ses").value=MAIL_USER;			
+					
+				}
+			);
+}
+function marcacionesMail(tipo_marca)
+{
+	$("#mypanel").panel( "close" );
+	$.mobile.loading( 'show', {
+				text: 'Procesando informacion...',
+				textVisible: true,
+				theme: 'a',
+				html: ""
+			});
+			
+			$("#output").load(path_query2, 
+			{tipo:9, opc:tipo_marca} 
+				,function(){	
 					
 				}
 			);

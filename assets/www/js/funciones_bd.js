@@ -106,6 +106,7 @@ function onready()
 	$("#ll_mapa").hide();
 	$("#ll_off").hide(); 
 	$("#ll_cerrar").hide(); 
+	$("#ll_dip").hide(); 
 	if(navigator.connection.type == Connection.NONE)
  	{
  		onOffline();
@@ -156,6 +157,7 @@ function loadInicioOff()
 		$("#ll_mapa").hide();
 		$("#ll_off").hide(); 
 		$("#ll_cerrar").show(); 
+		
 		                      
 		loadMenuOff();
 		selectLugarBDlocal();
