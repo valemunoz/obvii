@@ -72,11 +72,11 @@ function inicioSesion()
 		msg +="Todos los campos son obligatorios.<br>";
 	  valida=false;
 	}
-	if(!validarEmail(mail))
+	/*if(!validarEmail(mail))
 	{
 		msg +="Correo electronico no valido.";
 		valida=false;
-	}
+	}*/
 	if(navigator.connection.type == Connection.NONE)
  	{
  		onOffline();
@@ -114,12 +114,16 @@ function inicioSesion()
 			{
 				if(NOMBRE_USER==mail && CLAVE_USUARIO== clave)
 				{
-					updateEstadoUser(0);
-					
+					updateEstadoUser(0);					
     			setTimeout("loadInicioOff();",1000);
 				}else
 				{
-						msg="No tiene conexion a internet.<br>Por favor conectese a una red para poder iniciar sesi&oacute;n";
+					msg="No tiene conexion a internet.<br>Por favor conectese a una red para poder iniciar sesi&oacute;n";
+					if(CLAVE_USUARIO!= clave && clave!="")
+					{
+						msg="Usuario o Clave incorrectas";
+					}
+						
 						mensaje(msg,'ERROR','myPopup_ses');
 				}
 			}else
@@ -253,8 +257,8 @@ function cerrarSesion()
 		$("#contenido_sesion").load(path_query, 
 			{tipo:3} 
 				,function(){	
+					userOff();				
 					
-					window.location.href="index.html";
 				}
 		);
 	}else
@@ -866,7 +870,7 @@ function inicio_ses()
 					
 					$.mobile.loading( 'hide');
 					$('#contenido_sesion').trigger('create');	
-					document.getElementById("mail_ses").value=MAIL_USER;			
+					document.getElementById("mail_ses").value=NOMBRE_USER;			
 					
 				}
 			);

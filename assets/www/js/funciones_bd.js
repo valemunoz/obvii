@@ -1,4 +1,5 @@
-var NOMBRE_USER,ID_USER,ID_OBVII_USER,ESTADO_USER,ID_TIPO_USUARIO,ID_ESTADO_ACTIVO, CLAVE_USUARIO,NUBE_USUARIO,LOCAL_USUARIO;
+var ID_USER,ID_OBVII_USER,ESTADO_USER,ID_TIPO_USUARIO,ID_ESTADO_ACTIVO, CLAVE_USUARIO,NUBE_USUARIO,LOCAL_USUARIO;
+var NOMBRE_USER="";
 var MAIL_USER="";
 var ID_LUGAR=Array();
 var NOM_LUGAR=Array();
@@ -95,7 +96,13 @@ function onready()
 {	
 	
 	uuid_user = device.uuid;
-	$("#uuid_text").html("ID device: "+uuid_user);
+	if(uuid_user!=null)
+	{
+		$("#uuid_text").html("ID device: "+uuid_user);
+	}else
+		{
+			mensaje("Error al obtener el ID del dispositivo. por favor intentelo nuevamente o revisa la configuracion de su equipo.",'Alerta','myPopup');
+		}
 	
 	$.mobile.loading( 'show', {
 			text: 'Cargando...',
@@ -107,6 +114,7 @@ function onready()
 	$("#ll_off").hide(); 
 	$("#ll_cerrar").hide(); 
 	$("#ll_dip").hide(); 
+			$("#list_mail_marca").hide(); 
 	if(navigator.connection.type == Connection.NONE)
  	{
  		onOffline();
@@ -157,13 +165,14 @@ function loadInicioOff()
 		$("#ll_mapa").hide();
 		$("#ll_off").hide(); 
 		$("#ll_cerrar").show(); 
-		
+		$("#list_mail_marca").hide(); 
 		                      
 		loadMenuOff();
 		selectLugarBDlocal();
 		
 		setTimeout("loadFavOff();",1000);
 		$.mobile.loading( 'hide');
+		
 		mensaje("No tiene conecci&oacute;n a internet activada.<br>El sistema trabajara de manera Local/Offline<br>Algunas opciones seran limitadas",'Alerta','myPopup');
 	}else
 	{
@@ -526,10 +535,12 @@ function addMarcaOff(id_marca_glob,nom_marca_glob,descrip_marca,marcacion)
 		  		mensaje("Marcacion realizada localmente",'Mensaje','myPopup');
 				},function (err){
 					$.mobile.loading( 'hide');
-		//alert(DEVICE_ONLINE);
-	  if(!DEVICE_ONLINE)
-	  {
-	  	$.mobile.loading( 'show', {
+					mensaje("Se produjo un error en la lectura de su posici&oacute;n.<br>Esto se puede suceder al no darle permisos al sistema para obtener su ubicacion actual o bien no tiene disponible GPS en el equipo.<br>Por favor revise su configuracion e intentelo nuevamente",'ERROR','myPopup');
+					//alert(DEVICE_ONLINE);
+					/*
+	  			if(!DEVICE_ONLINE)
+	  			{
+	  				$.mobile.loading( 'show', {
 						text: 'Marcando...',
 						textVisible: true,
 						theme: 'a',
@@ -583,11 +594,11 @@ function addMarcaOff(id_marca_glob,nom_marca_glob,descrip_marca,marcacion)
 					}, errorCB, successCB);
 					$.mobile.loading( 'hide');
 		  		mensaje("Marcacion realizada localmente",'Mensaje','myPopup');
-	  }else
-	  {
-			mensaje("Se produjo un error en la lectura de su posici&oacute;n.<br>Esto se puede suceder al no darle permisos al sistema para obtener su ubicacion actual o bien no tiene disponible GPS en el equipo.<br>Por favor revise su configuracion e intentelo nuevamente",'ERROR','myPopup');
-		}
-					
+	  		}else
+	  		{
+					mensaje("Se produjo un error en la lectura de su posici&oacute;n.<br>Esto se puede suceder al no darle permisos al sistema para obtener su ubicacion actual o bien no tiene disponible GPS en el equipo.<br>Por favor revise su configuracion e intentelo nuevamente",'ERROR','myPopup');
+				}
+					*/
 					},{timeout:6000});
 	
 }
@@ -999,7 +1010,8 @@ function validaMarcacionOff()
 			
 			},function (err){
 				
-				$.mobile.loading( 'hide');
+				mensaje("Se produjo un error en la lectura de su posici&oacute;n.<br>Esto se puede suceder al no darle permisos al sistema para obtener su ubicacion actual o bien no tiene disponible GPS en el equipo.<br>Por favor revise su configuracion e intentelo nuevamente",'ERROR','myPopup');
+				/*$.mobile.loading( 'hide');
 			$.mobile.loading( 'show', {
 				text: 'Marcando...',
 				textVisible: true,
@@ -1054,7 +1066,7 @@ function validaMarcacionOff()
       		
 					}, errorCB, successCB);
 					$.mobile.loading( 'hide');
-		  		mensaje("Marcacion realizada localmente",'Mensaje','myPopup');
+		  		mensaje("Marcacion realizada localmente",'Mensaje','myPopup');*/
 				},{timeout:6000});
 		
 		
@@ -1125,6 +1137,7 @@ function updateLocalDateUser(valor)
 
 function sendDevice()
 {
+	uuid_user = device.uuid;
 	var mail=$.trim(document.getElementById("mail_ses").value);
 	$("#mypanel").panel( "close" );
 	if(mail=="" || !validarEmail(mail))
@@ -1141,9 +1154,9 @@ function sendDevice()
 				theme: 'a',
 				html: ""
 			});
-		if(DEVICE_ONLINE)
+		if(DEVICE_ONLINE && uuid_user!=null && uuid_user!=0)
 		{
-			
+			$("#uuid_text").html("ID device: "+uuid_user);
 			$("#output").load(path_query2, 
 				{tipo:8,uuid_user:uuid_user,mail:mail} 
 					,function(){
@@ -1155,7 +1168,7 @@ function sendDevice()
 		}else
 		{
 			$.mobile.loading( 'hide');			
-			mensaje("No tiene conecci&oacute;n a internet activada.<br>Para solicitar dispositivo debe estar conectado a internet.",'Alerta','myPopup');			
+			mensaje("No tiene conecci&oacute;n a internet activada o no se pudo obtener el ID del dispositivo.<br>Para solicitar dispositivo debe estar conectado a internet.",'Alerta','myPopup');			
 		}
 		$("#msg_error_ses").html("");
 	}

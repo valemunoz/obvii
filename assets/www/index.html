@@ -10,8 +10,8 @@
   			<link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css" />
         <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.0-rc.1.min.css" />
         <script src="cordova.js"></script>
-        
-        
+       
+       
         <script src="js/jquery-1.10.2.min.js"></script> 
 				<script src="js/jquery.mobile-1.4.0-rc.1.min.js"></script> 
 				<script src="js/funciones.js"></script>
@@ -24,11 +24,10 @@
 <script>
 document.addEventListener("offline", onready, false);
 document.addEventListener("online", onready, false);
-document.addEventListener("deviceready", onready, false);
+//document.addEventListener("deviceready", onready, false);
 </script>
     </head>
     <body>
-
     <div data-role="page" id="mappage" data-theme="a">
 		    	<div data-role="panel" id="mypanel" data-theme="a" style="z-index:99999;" data-position="right" data-display="overlay">
     	  		<a href="#mypanel" data-iconpos="top" data-rel="close" data-icon="delete" data-role="button" data-iconpos="notext"></a>
@@ -58,6 +57,7 @@ document.addEventListener("deviceready", onready, false);
                 			<h3>Todas</h3>                
 				            </a></li>
         				</ul>
+        				
     				</div>
 			  	  <br><span class="titulo3" id="uuid_text"></span>				
 				</div><!-- /panel -->
