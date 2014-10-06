@@ -14,13 +14,17 @@
 						var bar="";
 						if(NOM_LUGAR.length >0)
 						{
+							arr_lugares=Array();
 						for (var i = 0; i < ID_LUGAR.length; i++)
 						{
+							
 							//alert(ID_LUGAR[i]);
-							if($.trim(FAV_LUGAR[i])=="1")
+							
+							if($.trim(FAV_LUGAR[i])=="1" && arr_lugares.indexOf(ID_LUGAR[i])==-1)
 							{
 								bar +="<li ><a  href=javascript:addMarcaBDLocal(ID_LUGAR["+i+"],NOM_LUGAR["+i+"],TIP_LUGAR["+i+"],MARCACION_LUGAR["+i+"]);>"+NOM_LUGAR[i]+"</a><a href='javascript:loadEditarOff(ID_LUGAR["+i+"]);' data-rel='popup' data-position-to='window' data-transition='pop' data-icon='search'>Editar</a></li>";
 							}
+							arr_lugares[arr_lugares.length]=ID_LUGAR[i];
 							
 						}
 						$("#list_registros").append(bar);

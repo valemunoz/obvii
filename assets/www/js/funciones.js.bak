@@ -909,7 +909,7 @@ function marcacionesMail(tipo_marca)
 	}else
 		{
 			
-			mensaje("Este servicio no esta disponible para su tipo de usuario.",'ALERTA','myPopup');
+			mensaje("Este servicio no esta disponible para su tipo de usuario.",'MENSAJE','myPopup');
 		}
 }
 

@@ -277,7 +277,7 @@ document.addEventListener("deviceready", deviceListo, false);
 
    	<div data-role="header" >
 	   			 <img id=back_boton src="images/back.png" class="ui-btn-left" onclick="volver();">
-      		<h1><img src="images/obvii-logo-white.png">     		 </h1>
+      		<h1>T&eacute;rminos y condiciones Obvii 		 </h1>
       		
    		</div>    		
    	  <div data-role="content" id="contenido" class=contenido_termino>  	  	

@@ -1234,8 +1234,7 @@ function registrarDemo()
 			}
 	if(!valida)
 	{
-				
-				$("#msg_error_reg").html(msg);
+				mensaje(msg,'Alerta','myPopup');
 				
 	}else
 		{
