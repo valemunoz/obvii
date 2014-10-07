@@ -34,6 +34,8 @@ var USER_DEMO=false;
 var dateLocal="";
 var dateNube;
 var diffHoraria=false;
+var watchLon=0;
+var watchLat=0;
 
 
 $(function(){
@@ -100,9 +102,43 @@ function deviceListo()
 		$("#uuid_text").html("ID device: "+uuid_user);
 	}else
 		{
-			mensaje("Error al obtener el ID del dispositivo. por favor intentelo nuevamente o revisa la configuracion de su equipo.",'Alerta','myPopup');
+			mensaje(MSG_ERR_DISPO,'Alerta','myPopup');
 		}
+		
+		
+		
+    
 }
+function startWatchPosition()
+{
+	var options = { maximumAge: 3000,timeout: 5000 , enableHighAccuracy: true};
+  watchID = navigator.geolocation.watchPosition(watchIDSuccess, watchIDonError, options);
+}
+function stopWatchPosition()
+{
+	navigator.geolocation.clearWatch(watchID);
+	watchID = null;
+}
+function watchIDSuccess(position) 
+{
+	
+	if(position.coords.longitude!= watchLon || position.coords.latitude!= watchLat)
+	{
+		alert("lat:"+position.coords.latitude+" - Lon:"+position.coords.longitude+" - presicion"+position.coords.accuracy+" - speed"+position.coords.speed+" - heading: "+position.coords.heading);
+		watchLon=position.coords.longitude;
+		watchLat=position.coords.latitude;
+		//enviamos
+	}
+        
+}
+
+ // onError Callback receives a PositionError object
+ //
+ function watchIDonError(error) {
+     alert('code: '    + error.code    + '\n' +
+           'message: ' + error.message + '\n');
+ }
+
 function onready()
 {	
 
@@ -142,17 +178,22 @@ function onready2()
         			
   }else
   {
+  	startWatchPosition();
   	
   	/*$.getScript( "http://www.chilemap.cl/OpenLayers/OpenLayers.js", function( data, textStatus, jqxhr ) {
 
 		});*/
-  	  	
+		selectUserBDlocal(); 
+				
+  	setTimeout("document.getElementById('mail_ses').value=NOMBRE_USER;",500)
   	$("#output").load(path_query2, 
 			{tipo:1} 
 			,function(){
 				
 				selectMarcaBDlocal();
 				$.mobile.loading( 'hide');
+				
+				
 			}
 		);
   }
@@ -175,7 +216,7 @@ function loadInicioOff()
 		setTimeout("loadFavOff();",1000);
 		$.mobile.loading( 'hide');
 		
-		mensaje("No tiene conecci&oacute;n a internet activada.<br>El sistema trabajara de manera Local/Offline<br>Algunas opciones seran limitadas",'Alerta','myPopup');
+		mensaje(MSG_OFFLINE,'Alerta','myPopup');
 	}else
 	{
 		$.mobile.loading( 'hide');
@@ -185,7 +226,7 @@ function loadInicioOff()
 		
 		if(ID_ESTADO_ACTIVO==1)
 		{
-			mensaje("Su usuario no esta activado para iniciar sesion en este dispositivo",'ERROR','myPopup');
+			mensaje(MSG_USER_DISPO_NO,'ERROR','myPopup');
 		}else
 		{
 			if(ESTADO_USER==1)
@@ -193,7 +234,7 @@ function loadInicioOff()
 				
 			}else
 			{
-				mensaje("No tiene conexion a internet y no tiene una sesion activa.<br>Por favor conectese a una red para continuar",'ERROR','myPopup');
+				mensaje(MSG_NO_SESION,'ERROR','myPopup');
 			}
 		}
 	}
@@ -429,7 +470,7 @@ function addMarcaBDLocal(id_marca_glob,nom_marca_glob,tipo,marcacion)
 				descrip_marca="-";
 				if($.trim(tipo)=='t')
 				{
-					mensaje("<div id='coment_form' name='coment_form'><input type='button' class=bottom_coment value='Entrada' onclick=loadComentarioOff('"+id_marca_glob+"','"+nom_marca_glob+"');><br><input type='button' onclick=addMarcaOff('"+id_marca_glob+"','"+nom_marca_glob+"','"+descrip_marca+"',1); class=bottom_coment value='Salida'></div>",'Seleccione una opci&oacute;n','myPopup');
+					mensaje("<div id='coment_form' name='coment_form'><input type='button' class=bottom_coment value='Entrada' onclick=loadComentarioOff('"+id_marca_glob+"','"+nom_marca_glob+"');><br><input type='button' onclick=addMarcaOff('"+id_marca_glob+"','"+nom_marca_glob+"','"+descrip_marca+"',1); class=bottom_coment value='Salida'></div>",'Seleccione una opcion','myPopup');
 				}else
 				{
 						mensaje("<div id='coment_form' name='coment_form'><input type='button' class=bottom_coment value='Entrada' onclick=addMarcaOff('"+id_marca_glob+"','"+nom_marca_glob+"','"+descrip_marca+"',0);><br><input type='button' onclick=addMarcaOff('"+id_marca_glob+"','"+nom_marca_glob+"','"+descrip_marca+"',1); class=bottom_coment value='Salida'></div>",'Seleccione una opci&oacute;n','myPopup');
@@ -537,7 +578,7 @@ function addMarcaOff(id_marca_glob,nom_marca_glob,descrip_marca,marcacion)
 		  		mensaje("Marcacion realizada localmente",'Mensaje','myPopup');
 				},function (err){
 					$.mobile.loading( 'hide');
-					mensaje("Se produjo un error en la lectura de su posici&oacute;n.<br>Esto se puede suceder al no darle permisos al sistema para obtener su ubicacion actual o bien no tiene disponible GPS en el equipo.<br>Por favor revise su configuracion e intentelo nuevamente",'ERROR','myPopup');
+					mensaje(MSG_NO_GPS,'ERROR','myPopup');
 					//alert(DEVICE_ONLINE);
 					/*
 	  			if(!DEVICE_ONLINE)
@@ -607,7 +648,7 @@ function addMarcaOff(id_marca_glob,nom_marca_glob,descrip_marca,marcacion)
 function noLocationOff(error)
 {
 		$.mobile.loading( 'hide');
-			mensaje("Se produjo un error en la lectura de su posici&oacute;n.<br>Esto se puede suceder al no darle permisos al sistema para obtener su ubicacion actual o bien no tiene disponible GPS en el equipo.<br>Por favor revise su configuracion e intentelo nuevamente",'ERROR','myPopup');
+			mensaje(MSG_NO_GPS,'ERROR','myPopup');
 		
 }
 
@@ -750,7 +791,7 @@ function checkInternet(tip)
  			if(tip==3)
  			{
  				$.mobile.loading( 'hide');
- 				mensaje("El sistema no se puede conectar a internet,<br>por favor revise su conecci&oacute;n e int&eacute;ntelo nuevamente.","ERROR","myPopup");
+ 				mensaje(MSG_NO_INTERNET,"ERROR","myPopup");
  			}
  		}else
  			{
@@ -850,7 +891,7 @@ function processSyc()
 						
 						if(!sync_marca)
 						{
-							mensaje("Problemas de conexi&oacute;n, por favor int&eacute;ntelo nuevamente.","ERROR","myPopup_ses");
+							mensaje(MSG_NO_INTERNET,"ERROR","myPopup_ses");
 						}else
 						{
 							cleanMarcaBD();
@@ -865,13 +906,13 @@ function processSyc()
 			{
 				$.mobile.loading( 'hide');
 				$("#mypanel").panel( "close" );
-				mensaje("No hay marcaciones disponibles para sincronizar",'MENSAJE','myPopup');
+				mensaje(MSG_NO_SYNC,'MENSAJE','myPopup');
 			}
 	}else
 		{
 			$.mobile.loading( 'hide');
 			$("#mypanel").panel( "close" );
-				mensaje("Este servicio no esta disponible para su tipo de usuario.",'MENSAJE','myPopup');
+				mensaje(MSG_USER_DEMO,'MENSAJE','myPopup');
 		}
 }
 function checkConnection() {                              
@@ -935,7 +976,7 @@ function validaMarcacionOff()
 	}
 	if(!validarEmail(mail) && mail!="")
 	{
-		msg +="Correo electronico no valido<br>";
+		msg +=MSG_NO_MAIL;
 		valida=false;
 	}
 
@@ -1013,14 +1054,14 @@ function validaMarcacionOff()
       		
 					}, errorCB, successCB);
 					$.mobile.loading( 'hide');
-		  		mensaje("Marcacion realizada localmente",'Mensaje','myPopup');
+		  		mensaje(MSG_MARCA_OFFLINE,'Mensaje','myPopup');
 		
 			
 		
 			
 			},function (err){
 				
-				mensaje("Se produjo un error en la lectura de su posici&oacute;n.<br>Esto se puede suceder al no darle permisos al sistema para obtener su ubicacion actual o bien no tiene disponible GPS en el equipo.<br>Por favor revise su configuracion e intentelo nuevamente",'ERROR','myPopup');
+				mensaje(MSG_NO_GPS,'ERROR','myPopup');
 				/*$.mobile.loading( 'hide');
 			$.mobile.loading( 'show', {
 				text: 'Marcando...',
@@ -1153,7 +1194,7 @@ function sendDevice()
 	if(mail=="" || !validarEmail(mail))
 	{
 		//mensaje("Debe ingresar un mail valido para solicitar dispositivo.",'Error','myPopup');
-		 $("#msg_error_ses").html("Debe ingresar un mail valido para solicitar dispositivo.");
+		 $("#msg_error_ses").html(MSG_NO_MAIL);
 		 $('#mail_ses').focus();
 	}else
 		{
@@ -1177,7 +1218,7 @@ function sendDevice()
 		}else
 		{
 			$.mobile.loading( 'hide');			
-			mensaje("No tiene conecci&oacute;n a internet activada o no se pudo obtener el ID del dispositivo.<br>Para solicitar dispositivo debe estar conectado a internet.",'Alerta','myPopup');			
+			mensaje(MSG_ERR_DISPO,'Alerta','myPopup');			
 		}
 		$("#msg_error_ses").html("");
 	}
@@ -1199,24 +1240,29 @@ function registrarDemo()
 	
 	var msg="";
 	var valida=true;
+	if(!document.getElementById("checkbox-1a").checked)
+	{
+		msg=MSG_TERMINOS;
+	  valida=false;
+	}
 	if(mail =="" || clave=="" || re_clave=="" || nombre=="" || empresa=="")
 	{
-		msg +="Todos los campos son obligatorios.<br>";
+		msg +=MSG_CAMPOS;
 	  valida=false;
 	}
 	if(!validarEmail(mail))
 	{
-		msg +="Correo electronico no valido.<br>";
+		msg +=MSG_NO_MAIL;
 		valida=false;
 	}
 	if(clave.length < 6)
 	{
-		msg +="La contrase&ntilde;as debe contener al menos 6 caracteres.<br>";
+		msg +=MSG_CLAVE;
 	  valida=false;
 	}
 	if(clave!= re_clave)
 	{
-		msg +="Las contrase&ntilde;as ingresadas no coinciden.<br>";
+		msg +=MSG_RE_CLAVE;
 	  valida=false;
 	}
 			if(uuid_user!=null && uuid_user!=0)
@@ -1230,7 +1276,7 @@ function registrarDemo()
 			if(uuid_user==null || uuid_user==0)
 			{
 				valida=false;
-				msg +="Error al obtener el ID del dispositivo. por favor intentelo nuevamente o revisa la configuracion de su equipo.<br>";
+				msg +=MSG_ERR_DEVICE;
 			}
 	if(!valida)
 	{

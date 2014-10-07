@@ -9,16 +9,40 @@ var OBVII_PAIS="chile";
 var path_query="http://locate.chilemap.cl/obvii/app/query.php";
 var path_query2="http://locate.chilemap.cl/obvii/app/query_app.php";
 var path_info="http://locate.chilemap.cl/obvii/app/info.php";
- 			function loadMenu()
- 			{
- 				
- 				$("#output").load(path_query2, 
-				{tipo:2} 
-					,function(){
-						
-					}
-				);
- 			}
+
+/*MENSAJES*/
+var MSG_CAMPOS="Todos los campos son obligatorios.<br>";
+var MSG_NOCONEC="No tiene conexion a internet.<br>Por favor conectese a una red para poder iniciar sesi&oacute;n<br>";
+var MSG_OFFLINE="No tiene conecci&oacute;n a internet activada.<br>El sistema trabajara de manera Local/Offline<br>Algunas opciones seran limitadas<br>";
+var MSG_ERR_DISPO="No tiene conecci&oacute;n a internet activada o no se pudo obtener el ID del dispositivo.<br>Para solicitar dispositivo debe estar conectado a internet.<br>";
+var MSG_ERR_DEVICE="Error al obtener el ID del dispositivo. por favor intentelo nuevamente o revisa la configuracion de su equipo.<br>";
+var MSG_USER_DISPO_NO="Su usuario no esta activado para iniciar sesion en este dispositivo<br>";
+var MSG_NO_SESION="No tiene conexion a internet y no tiene una sesion activa.<br>Por favor conectese a una red para continuar<br>";
+var MSG_NO_GPS="Se produjo un error en la lectura de su posici&oacute;n.<br>Esto se puede suceder al no darle permisos al sistema para obtener su ubicacion actual o bien no tiene disponible GPS en el equipo.<br>Por favor revise su configuracion e intentelo nuevamente<br>";
+var MSG_NO_INTERNET="El sistema no se puede conectar a internet,<br>por favor revise su conecci&oacute;n e int&eacute;ntelo nuevamente.<br>";
+var MSG_NO_SYNC="No hay marcaciones disponibles para sincronizar<br>";
+var MSG_USER_DEMO="Este servicio no esta disponible para su tipo de usuario.<br>";
+var MSG_NO_MAIL="Correo electronico no valido<br>";
+var MSG_TERMINOS="Debe aceptar los t&eacute;rminos y condiciones para poder registrarse.<br>";
+var MSG_MARCA_OFFLINE="Marcacion realizada localmente<br>";
+var MSG_CLAVE="La contrase&ntilde;as debe contener al menos 6 caracteres.<br>";
+var MSG_RE_CLAVE="Las contrase&ntilde;as ingresadas no coinciden.<br>";
+var MSG_ERR_USER="Usuario o Clave incorrectas<br>";
+var MSG_NOM_MARCA="Nombre de la marcacion es obligatoria<br>";
+var MSG_ERR_NUM="N&uacute;mero municipal debe ser num&eacute;rico <br>";
+var MSG_DEMO='Su usuario es de tipo Demo, el uso del sistema sera limitado. Si desea un upgrade de su cuenta env&iacute;e un mail a contacto@architeq.cl';
+var MSG_ERR_CONEC="Problemas de conexi&oacute;n, por favor int&eacute;ntelo nuevamente.<br>";
+/*FIN MENSAJE*/
+function loadMenu()
+{
+	
+	$("#output").load(path_query2, 
+	{tipo:2} 
+		,function(){
+			
+		}
+	);
+}
  				
 
 function cambiar(nom_mod)
@@ -31,13 +55,13 @@ function cambiar(nom_mod)
 		
 		setTimeout("$( '#nom_reg' ).focus();",500);
 	}
-	//$( "#nom_reg" ).focus();
+	
 	
 }
 function volver()
 {
 	
-	//$.mobile.changePage('#mod_sesion');
+	
 	history.go(-1);
 }
 function validarEmail( email ) {
@@ -54,7 +78,7 @@ function mensaje(CM_mensaje,titulo,div)
 	var html_msg="";
 	if(titulo!="")
 	{
-		html_msg +="<div class=titulo>"+titulo+"</div>";
+		html_msg +="<div class=titulo>"+titulo.toUpperCase()+"</div>";
 	}
   html_msg +="<p>"+CM_mensaje+"</p>";
 	$( "#"+div ).html(html_msg); 
@@ -82,14 +106,10 @@ function inicioSesion()
 	var valida=true;
 	if(mail =="" || clave=="")
 	{
-		msg +="Todos los campos son obligatorios.<br>";
+		msg +=MSG_CAMPOS;
 	  valida=false;
 	}
-	/*if(!validarEmail(mail))
-	{
-		msg +="Correo electronico no valido.";
-		valida=false;
-	}*/
+	
 	if(navigator.connection.type == Connection.NONE)
  	{
  		onOffline();
@@ -131,17 +151,17 @@ function inicioSesion()
     			setTimeout("loadInicioOff();",1000);
 				}else
 				{
-					msg="No tiene conexion a internet.<br>Por favor conectese a una red para poder iniciar sesi&oacute;n";
+					msg=MSG_NOCONEC;
 					if(CLAVE_USUARIO!= clave && clave!="")
 					{
-						msg="Usuario o Clave incorrectas";
+						msg=MSG_ERR_USER;
 					}
 						
 						mensaje(msg,'ERROR','myPopup_ses');
 				}
 			}else
 			{
-				msg="No tiene conexion a internet.<br>Por favor conectese a una red para poder iniciar sesi&oacute;n";
+				msg=MSG_NOCONEC;
 				mensaje(msg,'ERROR','myPopup_ses');
 			}
 		}
@@ -289,12 +309,12 @@ function addUsuario()
 	var valida=true;
 	if(mail =="" || clave=="" || nombre=="")
 	{
-		msg +="Todos los campos son obligatorios.<br>";
+		msg +=MSG_CAMPOS;
 	  valida=false;
 	}
 	if(!validarEmail(mail))
 	{
-		msg +="Correo electronico no valido.";
+		msg +=MSG_NO_MAIL;
 		valida=false;
 	}
 	if(valida)
@@ -325,12 +345,12 @@ function RecClave()
 	var valida=true;
 	if(mail =="")
 	{
-		msg +="Todos los campos son obligatorios.<br>";
+		msg +=MSG_CAMPOS;
 	  valida=false;
 	}
 	if(!validarEmail(mail))
 	{
-		msg +="Correo electronico no valido.";
+		msg +=MSG_NO_MAIL;
 		valida=false;
 	}
 	if(valida)
@@ -373,17 +393,17 @@ function validaMarcacion()
 	var valida=true;
 	if(nombre=="" )//|| calle=="" || mail=="" || numero=="" || comuna==""
 	{
-		msg +="Nombre de la marcacion es obligatoria<br>";
+		msg +=MSG_NOM_MARCA;
 		valida=false;
 	}
 	if(!$.isNumeric(numero) && numero!="")
 	{
-		msg +="N&uacute;mero municipal debe ser numerico <br>";
+		msg +=MSG_ERR_NUM;
 		valida=false;
 	}
 	if(!validarEmail(mail) && mail!="")
 	{
-		msg +="Correo electronico no valido<br>";
+		msg +=MSG_NO_MAIL;
 		valida=false;
 	}
 
@@ -453,17 +473,17 @@ function validaLugar()
 	var valida=true;
 	if(nombre=="" || calle=="" || mail=="" || numero=="" || comuna=="")
 	{
-		msg +="Todos los campos son obligatorios <br>";
+		msg +=MSG_CAMPOS;
 		valida=false;
 	}
 	if(!$.isNumeric(numero))
 	{
-		msg +="N&uacute;mero municipal debe ser numerico <br>";
+		msg +=MSG_ERR_NUM;
 		valida=false;
 	}
 	if(!validarEmail(mail))
 	{
-		msg +="Correo electronico no valido<br>";
+		msg +=MSG_NO_MAIL;
 		valida=false;
 	}
 
@@ -501,17 +521,17 @@ function validaUpLugares(id_lugar)
 	var valida=true;
 	if(nombre=="" || calle=="" || mail=="" || numero=="" || comuna=="")
 	{
-		msg +="Todos los campos son obligatorios <br>";
+		msg +=MSG_CAMPOS;
 		valida=false;
 	}
 	if(!$.isNumeric(numero))
 	{
-		msg +="N&uacute;mero municipal debe ser numerico <br>";
+		msg +=MSG_ERR_NUM;
 		valida=false;
 	}
 	if(!validarEmail(mail))
 	{
-		msg +="Correo electronico no valido<br>";
+		msg +=MSG_NO_MAIL;
 		valida=false;
 	}
 
@@ -540,7 +560,7 @@ function marcar(id_lugar,comenta,marca)
 		  comenta=0;
 		else
 			comenta=1;  
-		mensaje("<div id='coment_form' name='coment_form'><input type='button' onclick='marcarLugar("+id_lugar+","+comenta+");' class=bottom_coment value='Entrada'><br><input type='button' onclick='marcarSalida("+id_lugar+");' class=bottom_coment value='Salida'></div>",'Seleccione una opci&oacute;n','myPopup');
+		mensaje("<div id='coment_form' name='coment_form'><input type='button' onclick='marcarLugar("+id_lugar+","+comenta+");' class=bottom_coment value='Entrada'><br><input type='button' onclick='marcarSalida("+id_lugar+");' class=bottom_coment value='Salida'></div>",'Seleccione una opcion','myPopup');
 	}
 	
 }
@@ -638,7 +658,7 @@ function marcarLugar(id_lugar,comenta)
 {
 	$.mobile.loading( 'hide');
 	
-	mensaje("Se produjo un error en la lectura de su posici&oacute;n.<br>Esto se puede suceder al no darle permisos al sistema para obtener su ubicacion actual.<br>Por favor revise su configuracion e intentelo nuevamente",'ERROR','myPopup');
+	mensaje(MSG_NO_GPS,'ERROR','myPopup');
 	
 }
 function marcarLugarCom(id_lugar)
@@ -909,7 +929,7 @@ function marcacionesMail(tipo_marca)
 	}else
 		{
 			
-			mensaje("Este servicio no esta disponible para su tipo de usuario.",'ALERTA','myPopup');
+			mensaje(MSG_USER_DEMO,'ALERTA','myPopup');
 		}
 }
 
