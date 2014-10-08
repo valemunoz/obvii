@@ -551,3 +551,20 @@ OpenLayers.Projection("EPSG:900913") ); */
 CM_vector_current.addFeatures( [pointFeature] );
 //addMarcador("img/iconos/circle.png","10,10",lat_circulo,lon_circulo,""); 
 }
+
+function distanciaEntre(CM_lon1,CM_lat1,CM_lon2,CM_lat2)
+{
+	CM_lonlat=new OpenLayers.LonLat(CM_lon1,CM_lat1);
+  CM_lonlat2=new OpenLayers.LonLat(CM_lon2,CM_lat2);
+			  var point1 = new OpenLayers.Geometry.Point(CM_lonlat.lon, CM_lonlat.lat);
+        var point2 = new OpenLayers.Geometry.Point(CM_lonlat2.lon, CM_lonlat2.lat);
+        
+        
+
+
+var line = new OpenLayers.Geometry.LineString([point1, point2]);
+
+
+  //      return point1.distanceTo(point2);
+  return line.getGeodesicLength(new OpenLayers.Projection("EPSG:4326"));
+}

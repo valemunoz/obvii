@@ -36,7 +36,8 @@ var dateNube;
 var diffHoraria=false;
 var watchLon=0;
 var watchLat=0;
-
+var watchEstado=true;
+var watchID;
 
 $(function(){
   setInterval(function(){  
@@ -104,10 +105,39 @@ function deviceListo()
 		{
 			mensaje(MSG_ERR_DISPO,'Alerta','myPopup');
 		}
-		startWatchPosition();
+		
 		
 		
     
+}
+function resumeFunc()
+{
+	
+			navigator.geolocation.getCurrentPosition (function (pos)
+		{
+		
+  	
+		  	var distancia =distanciaEntre(watchLon,watchLat,pos.coords.longitude,pos.coords.latitude);
+	var speed=pos.coords.speed;
+	
+	if((pos.coords.longitude!= watchLon || pos.coords.latitude!= watchLat) && distancia > 10)
+	{
+		alert("lat:"+position.coords.latitude+" - Lon:"+position.coords.longitude+" - presicion"+position.coords.accuracy+" - speed"+position.coords.speed+" - heading: "+position.coords.heading);
+		watchLon=pos.coords.longitude;
+		watchLat=pos.coords.latitude;
+		
+		$("#output").load(path_query2, 
+			{tipo:11,lon:-33.333,lat:watchLat,prec:position.coords.accuracy,speed:speed, heading:pos.coords.heading} 
+			,function(){
+			}
+		);
+		//enviamos
+	}
+			
+			},function (err){
+				
+				
+				},{timeout:6000});
 }
 function startWatchPosition()
 {
@@ -121,12 +151,19 @@ function stopWatchPosition()
 }
 function watchIDSuccess(position) 
 {
-	
-	if(position.coords.longitude!= watchLon || position.coords.latitude!= watchLat)
+	var distancia =distanciaEntre(watchLon,watchLat,position.coords.longitude,position.coords.latitude);
+	var speed=position.coords.speed;
+	if((position.coords.longitude!= watchLon || position.coords.latitude!= watchLat) && distancia > 10)	
 	{
-		alert("lat:"+position.coords.latitude+" - Lon:"+position.coords.longitude+" - presicion"+position.coords.accuracy+" - speed"+position.coords.speed+" - heading: "+position.coords.heading);
+		//alert("lat:"+position.coords.latitude+" - Lon:"+position.coords.longitude+" - presicion"+position.coords.accuracy+" - speed"+position.coords.speed+" - heading: "+position.coords.heading);
 		watchLon=position.coords.longitude;
 		watchLat=position.coords.latitude;
+		
+		$("#output").load(path_query2, 
+			{tipo:11,lon:watchLon,lat:watchLat,prec:position.coords.accuracy,speed:speed, heading:position.coords.heading} 
+			,function(){
+			}
+		);
 		//enviamos
 	}
         
@@ -135,8 +172,9 @@ function watchIDSuccess(position)
  // onError Callback receives a PositionError object
  //
  function watchIDonError(error) {
-     alert('code: '    + error.code    + '\n' +
-           'message: ' + error.message + '\n');
+     //alert('code: '    + error.code    + '\n' +
+       //    'message: ' + error.message + '\n');
+       mensaje(MSG_NO_GPS,'alerta','myPopup');
  }
 
 function onready()
@@ -178,6 +216,7 @@ function onready2()
         			
   }else
   {
+  	
   	
   	/*$.getScript( "http://www.chilemap.cl/OpenLayers/OpenLayers.js", function( data, textStatus, jqxhr ) {
 
@@ -342,7 +381,7 @@ function successCB(e)
 }
 function errorCB(e)
 {
-	alert("error bd "+e.code);
+	//alert("error bd "+e.code);
 }
 function onOffline() 
 {

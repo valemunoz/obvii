@@ -284,6 +284,7 @@ function loadInfo()
 
 function cerrarSesion()
 {
+	stopWatchPosition();
 	
 	if(DEVICE_ONLINE)
 	{
