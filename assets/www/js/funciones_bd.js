@@ -43,6 +43,7 @@ $(function(){
   setInterval(function(){  
   	
 					d = new Date();
+					
 					fmes=d.getMonth();
 					fmes=fmes+1;
 					if(fmes < 10)
@@ -63,14 +64,16 @@ $(function(){
 					var fsec=d.getSeconds();
 					if(fsec < 10)
 					  fsec="0"+fsec;      			
-    			var dateLocal_new = new Date(''+d.getFullYear()+'-'+fmes+'-'+fdia+' '+fhora+':'+fmin+':'+fsec+'');
+    			//var dateLocal_new = new Date(''+d.getFullYear()+'-'+fmes+'-'+fdia+' '+fhora+':'+fmin+':'+fsec+'');
+    			var dateLocal_new = new Date(''+d.getFullYear()+'/'+fmes+'/'+fdia+' '+fhora+':'+fmin+':'+fsec+'');
+    			
     			if(dateLocal=="")
     			{    				
     				dateNube=new Date(''+NUBE_USUARIO.substr(0, 10)+' '+NUBE_USUARIO.substr(11)+'');    				
     				
     				if(LOCAL_USUARIO=="local" || LOCAL_USUARIO=="")
     				{
-    					dateLocal=new Date(''+d.getFullYear()+'-'+fmes+'-'+fdia+' '+fhora+':'+fmin+':'+fsec+'');
+    					dateLocal=new Date(''+d.getFullYear()+'/'+fmes+'/'+fdia+' '+fhora+':'+fmin+':'+fsec+'');
     					
     				}else
     					{
@@ -80,7 +83,7 @@ $(function(){
     				//alert(''+LOCAL_USUARIO.substr(0, 10)+' '+LOCAL_USUARIO.substr(11)+'');
     			}
     				
-    			
+
     			if(dateLocal_new > dateLocal)
     			{    				
     				dateLocal=dateLocal_new;    				
@@ -141,7 +144,7 @@ function resumeFunc()
 }
 function startWatchPosition()
 {
-	var options = { maximumAge: 3000,timeout: 5000 , enableHighAccuracy: true};
+	var options = {timeout: 5000 , enableHighAccuracy: true};
   watchID = navigator.geolocation.watchPosition(watchIDSuccess, watchIDonError, options);
 }
 function stopWatchPosition()
@@ -153,7 +156,7 @@ function watchIDSuccess(position)
 {
 	var distancia =distanciaEntre(watchLon,watchLat,position.coords.longitude,position.coords.latitude);
 	var speed=position.coords.speed;
-	if((position.coords.longitude!= watchLon || position.coords.latitude!= watchLat) && distancia > 30)	
+	if((position.coords.longitude!= watchLon || position.coords.latitude!= watchLat) && distancia > 200)	
 	{
 		//alert("lat:"+position.coords.latitude+" - Lon:"+position.coords.longitude+" - presicion"+position.coords.accuracy+" - speed"+position.coords.speed+" - heading: "+position.coords.heading);
 		watchLon=position.coords.longitude;
@@ -174,7 +177,7 @@ function watchIDSuccess(position)
  function watchIDonError(error) {
      //alert('code: '    + error.code    + '\n' +
        //    'message: ' + error.message + '\n');
-       mensaje(MSG_NO_GPS,'alerta','myPopup');
+       //mensaje(MSG_NO_GPS,'alerta','myPopup');
  }
 
 function onready()
